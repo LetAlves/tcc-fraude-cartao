@@ -1,0 +1,25 @@
+# Ambiente Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Credenciais (NUNCA versionar)
+.env
+*.kaggle.json
+
+# Dados (arquivos grandes ficam fora do git)
+data/raw/
+data/processed/
+
+# Outputs de notebooks
+.ipynb_checkpoints/
+
+# Relatórios e figuras geradas
+reports/*.png
+reports/*.txt
+
+# IDEs
+.vscode/
+.idea/

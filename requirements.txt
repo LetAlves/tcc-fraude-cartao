@@ -1,0 +1,25 @@
+# ── Manipulação de dados ──────────────────────────────────────────────────────
+pandas>=2.1.0
+numpy>=1.26.0
+
+# ── Machine Learning ──────────────────────────────────────────────────────────
+scikit-learn>=1.4.0
+xgboost>=2.0.0
+lightgbm>=4.3.0
+imbalanced-learn>=0.12.0      # SMOTE e variantes para desbalanceamento
+
+# ── Visualização ──────────────────────────────────────────────────────────────
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# ── Ambiente interativo ───────────────────────────────────────────────────────
+jupyter>=1.0.0
+ipykernel>=6.29.0
+nbformat>=5.9.0               # leitura/escrita de notebooks programática
+
+# ── Download de dados ─────────────────────────────────────────────────────────
+kaggle>=1.6.0
+
+# ── Utilitários ───────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0          # variáveis de ambiente (.env para credenciais Kaggle)
+tqdm>=4.66.0                  # barras de progresso
