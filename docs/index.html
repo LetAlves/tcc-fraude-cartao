@@ -467,6 +467,70 @@
       margin-top: 4px;
     }
 
+    /* ── Botão compartilhar ─────────────────────────────────────────────── */
+    .btn-compartilhar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-compartilhar:hover {
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .btn-compartilhar.copiado {
+      background: #10B981;
+      border-color: #10B981;
+    }
+
+    /* ── Toast de notificação ────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1E293B;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      z-index: 999;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.visivel {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── Banner de progresso importado ──────────────────────────────────── */
+    .banner-importado {
+      background: #D1FAE5;
+      border: 1.5px solid #10B981;
+      color: #065F46;
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     /* ── Rodapé ─────────────────────────────────────────────────────────── */
     footer {
       text-align: center;
@@ -485,15 +549,26 @@
       <h1>Guia do TCC — Detecção de Fraudes em Cartão</h1>
       <p>Sistema Híbrido com Machine Learning + RAG &nbsp;·&nbsp; Ciência da Computação &nbsp;·&nbsp; Dupla</p>
     </div>
-    <div class="progress-global">
-      <span>Progresso geral: <strong id="pct-geral">0%</strong></span>
-      <div class="progress-bar-outer">
-        <div class="progress-bar-fill" id="barra-geral" style="width:0%"></div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end">
+      <button class="btn-compartilhar" id="btn-share" onclick="compartilharProgresso()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+        Compartilhar progresso
+      </button>
+      <div class="progress-global">
+        <span>Progresso geral: <strong id="pct-geral">0%</strong></span>
+        <div class="progress-bar-outer">
+          <div class="progress-bar-fill" id="barra-geral" style="width:0%"></div>
+        </div>
+        <span id="txt-concluidas" style="font-size:0.75rem;opacity:0.7">0 de 0 tarefas concluídas</span>
       </div>
-      <span id="txt-concluidas" style="font-size:0.75rem;opacity:0.7">0 de 0 tarefas concluídas</span>
     </div>
   </div>
 </header>
+
+<div class="toast" id="toast"></div>
 
 <div class="container">
 
@@ -957,8 +1032,67 @@ function atualizarCountdown() {
   document.getElementById('cd-dias').textContent = dias % 7;
 }
 
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function mostrarToast(msg, duracao = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visivel');
+  setTimeout(() => t.classList.remove('visivel'), duracao);
+}
+
+// ── Compartilhar progresso ────────────────────────────────────────────────────
+function compartilharProgresso() {
+  const estado = getEstado();
+  const n1 = localStorage.getItem('tcc_nome_p1') || 'Letícia';
+  const n2 = localStorage.getItem('tcc_nome_p2') || 'Lucas';
+
+  // Empacota estado + nomes num objeto, codifica em base64
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ estado, n1, n2 }))));
+  const url = window.location.origin + window.location.pathname + '#p=' + payload;
+
+  // Copia para a área de transferência
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('btn-share');
+    btn.classList.add('copiado');
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Link copiado!`;
+    mostrarToast('✅ Link copiado! Cole no WhatsApp pro Lucas.');
+    setTimeout(() => {
+      btn.classList.remove('copiado');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Compartilhar progresso`;
+    }, 3000);
+  }).catch(() => {
+    // Fallback: abre prompt com o link para copiar manualmente
+    window.prompt('Copie o link abaixo e mande pro Lucas:', url);
+  });
+}
+
+// ── Importar progresso via hash da URL ────────────────────────────────────────
+function importarProgressoDaURL() {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#p=')) return false;
+
+  try {
+    const payload = JSON.parse(decodeURIComponent(escape(atob(hash.slice(3)))));
+    if (!payload.estado) return false;
+
+    // Salva o estado importado no localStorage
+    salvarEstado(payload.estado);
+    if (payload.n1) localStorage.setItem('tcc_nome_p1', payload.n1);
+    if (payload.n2) localStorage.setItem('tcc_nome_p2', payload.n2);
+
+    // Remove o hash da URL para não reimportar ao recarregar
+    history.replaceState(null, '', window.location.pathname);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 (function init() {
+  // Verifica se há progresso compartilhado na URL (link do WhatsApp)
+  const importou = importarProgressoDaURL();
+
   // Restaura nomes salvos
   const n1 = localStorage.getItem('tcc_nome_p1') || 'Letícia';
   const n2 = localStorage.getItem('tcc_nome_p2') || 'Lucas';
@@ -971,6 +1105,15 @@ function atualizarCountdown() {
 
   atualizarCountdown();
   renderMeses();
+
+  // Mostra banner se acabou de importar progresso
+  if (importou) {
+    const banner = document.createElement('div');
+    banner.className = 'banner-importado';
+    banner.innerHTML = '✅ Progresso sincronizado! As tarefas marcadas foram atualizadas.';
+    document.querySelector('.container').insertBefore(banner, document.querySelector('.countdown'));
+    setTimeout(() => banner.remove(), 6000);
+  }
 })();
 </script>
 </body>
