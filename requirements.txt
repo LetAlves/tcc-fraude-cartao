@@ -4,9 +4,21 @@ numpy>=1.26.0
 
 # ── Machine Learning ──────────────────────────────────────────────────────────
 scikit-learn>=1.4.0
-xgboost>=2.0.0
-lightgbm>=4.3.0
-imbalanced-learn>=0.12.0      # SMOTE e variantes para desbalanceamento
+xgboost>=2.0.0                # modelo principal do TCC
+imbalanced-learn>=0.12.0      # SMOTE para desbalanceamento
+
+# ── Explicabilidade ───────────────────────────────────────────────────────────
+shap>=0.45.0                  # Camada 2: SHAP values por transação
+
+# ── RAG / Embeddings / Banco vetorial ─────────────────────────────────────────
+langchain>=0.2.0              # orquestração do pipeline RAG
+langchain-community>=0.2.0    # integrações: FAISS, HuggingFace
+sentence-transformers>=3.0.0  # embeddings multilíngues (paraphrase-multilingual-MiniLM)
+faiss-cpu>=1.8.0              # banco vetorial para busca por similaridade
+anthropic>=0.30.0             # Claude API (LLM para geração das explicações)
+
+# ── Interface ─────────────────────────────────────────────────────────────────
+streamlit>=1.35.0             # interface de demonstração do protótipo
 
 # ── Visualização ──────────────────────────────────────────────────────────────
 matplotlib>=3.8.0
@@ -15,11 +27,12 @@ seaborn>=0.13.0
 # ── Ambiente interativo ───────────────────────────────────────────────────────
 jupyter>=1.0.0
 ipykernel>=6.29.0
-nbformat>=5.9.0               # leitura/escrita de notebooks programática
+nbformat>=5.9.0
 
 # ── Download de dados ─────────────────────────────────────────────────────────
 kaggle>=1.6.0
 
 # ── Utilitários ───────────────────────────────────────────────────────────────
-python-dotenv>=1.0.0          # variáveis de ambiente (.env para credenciais Kaggle)
+python-dotenv>=1.0.0          # .env para credenciais Kaggle e Claude API
 tqdm>=4.66.0                  # barras de progresso
+optuna>=3.6.0                 # hyperparameter tuning do XGBoost

@@ -546,8 +546,8 @@
 <header>
   <div class="header-inner">
     <div>
-      <h1>Guia do TCC — Detecção de Fraudes em Cartão</h1>
-      <p>Sistema Híbrido com Machine Learning + RAG &nbsp;·&nbsp; Ciência da Computação &nbsp;·&nbsp; Dupla</p>
+      <h1>Guia do TCC — Detecção de Fraudes em Transações Pix</h1>
+      <p>Protótipo Híbrido ML + SHAP + RAG &nbsp;·&nbsp; Contexto Pix Brasileiro &nbsp;·&nbsp; Ciência da Computação &nbsp;·&nbsp; Dupla</p>
     </div>
     <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end">
       <button class="btn-compartilhar" id="btn-share" onclick="compartilharProgresso()">
@@ -665,7 +665,7 @@
       <div class="dica-card">
         <div class="dica-icon">📊</div>
         <h3>Experimentos rastreados</h3>
-        <p>Usem MLflow ou Weights & Biases para registrar cada modelo treinado. Facilita comparações para a banca.</p>
+        <p>Usem MLflow ou um CSV simples para registrar cada modelo treinado (hiperparâmetros + métricas). Facilita comparações no Capítulo 4.</p>
       </div>
       <div class="dica-card">
         <div class="dica-icon">✍️</div>
@@ -700,40 +700,33 @@ const MESES = [
     ano: 2026,
     atual: true,
     titulo: 'Fundação do projeto',
-    subtitulo: 'Entender o dataset, configurar ambiente e EDA inicial',
+    subtitulo: 'Entender o dataset IEEE-CIS, o contexto Pix e configurar o ambiente',
     tarefas: {
       p1: [
-        // ── Semana 1: entender o dataset antes de qualquer código ──
-        { id: 'm1_p1_0a', texto: 'Ler a descrição da competição IEEE-CIS no Kaggle e entender o problema de negócio', tags: ['pesquisa'] },
-        { id: 'm1_p1_0b', texto: 'Entender a estrutura das duas tabelas: train_transaction.csv (~590k linhas, 394 colunas) e train_identity.csv (~144k linhas, 41 colunas)', tags: ['pesquisa'] },
-        { id: 'm1_p1_0c', texto: 'Estudar os grupos de colunas de transação: TransactionAmt, card1–card6, addr1–addr2, dist1–dist2, P_emaildomain, R_emaildomain', tags: ['pesquisa'] },
-        { id: 'm1_p1_0d', texto: 'Entender os grupos de features numéricas: C1–C14 (contagens), D1–D15 (diferença de tempo em dias), M1–M9 (matchs booleanos), V1–V339 (features Vesta — significado anônimo)', tags: ['pesquisa'] },
-        { id: 'm1_p1_0e', texto: 'Entender as features de identidade: id_01–id_38 (dispositivo/rede), DeviceType (desktop/mobile), DeviceInfo (modelo)', tags: ['pesquisa'] },
-        { id: 'm1_p1_0f', texto: 'Compreender a variável alvo isFraud (0 = legítima, 1 = fraude) e o TransactionDT (segundos desde uma data de referência não divulgada)', tags: ['pesquisa'] },
-        // ── Semana 2: ambiente e código ──
+        { id: 'm1_p1_0a', texto: 'Ler a proposta aprovada do TCC completa e entender cada seção da metodologia', tags: ['pesquisa'] },
+        { id: 'm1_p1_0b', texto: 'Ler a descrição do dataset IEEE-CIS no Kaggle: entender as duas tabelas (transaction + identity)', tags: ['pesquisa'] },
+        { id: 'm1_p1_0c', texto: 'Estudar os grupos de colunas: C1–C14 (contagens), D1–D15 (tempo), M1–M9 (match), V1–V339 (Vesta anônimo)', tags: ['pesquisa'] },
+        { id: 'm1_p1_0d', texto: 'Entender as features de identidade: id_01–id_38, DeviceType, DeviceInfo', tags: ['pesquisa'] },
+        { id: 'm1_p1_0e', texto: 'Estudar o contexto Pix: o que são golpes típicos (falso funcionário, engenharia social, clonagem)?', tags: ['pesquisa'] },
         { id: 'm1_p1_1', texto: 'Configurar ambiente Python 3.11, criar venv e instalar requirements.txt', tags: ['codigo'] },
         { id: 'm1_p1_2', texto: 'Configurar credenciais Kaggle no .env e baixar o dataset via data_loader.py', tags: ['codigo'] },
-        { id: 'm1_p1_3', texto: 'Executar e validar src/data_loader.py: checar shapes, join e tipos', tags: ['codigo'] },
-        { id: 'm1_p1_4', texto: 'Rodar notebook 01_eda.ipynb: shape, dtypes, nulos, distribuição de isFraud', tags: ['codigo'] },
-        { id: 'm1_p1_5', texto: 'Documentar achados do EDA no relatório reports/eda_summary.txt', tags: ['escrita'] },
+        { id: 'm1_p1_3', texto: 'Rodar notebook 01_eda.ipynb: shape, dtypes, nulos e distribuição de isFraud', tags: ['codigo'] },
+        { id: 'm1_p1_4', texto: 'Documentar achados do EDA em reports/eda_summary.txt', tags: ['escrita'] },
       ],
       p2: [
-        // ── Semana 1: entender o problema antes de escrever ──
-        { id: 'm1_p2_0a', texto: 'Ler a descrição da competição IEEE-CIS no Kaggle e entender o contexto (o que é a Vesta Corporation, o que representa cada grupo de features)', tags: ['pesquisa'] },
-        { id: 'm1_p2_0b', texto: 'Entender o desbalanceamento de classes: apenas ~3,5% das transações são fraude — pesquisar por que isso é um problema para ML', tags: ['pesquisa'] },
-        { id: 'm1_p2_0c', texto: 'Ler ao menos 3 artigos de detecção de fraude com o dataset IEEE-CIS (buscar no Google Scholar: "IEEE-CIS fraud detection")', tags: ['pesquisa'] },
-        { id: 'm1_p2_0d', texto: 'Entender a métrica AUC-ROC vs AUC-PR: por que AUC-PR é mais adequada para dados desbalanceados', tags: ['pesquisa'] },
-        // ── Semana 2: infraestrutura e escrita ──
-        { id: 'm1_p2_1', texto: 'Levantar 15+ referências bibliográficas (IEEE Xplore, ACM DL, Google Scholar)', tags: ['pesquisa'] },
+        { id: 'm1_p2_0a', texto: 'Ler a proposta aprovada e entender a arquitetura das 3 camadas (ML → SHAP → RAG)', tags: ['pesquisa'] },
+        { id: 'm1_p2_0b', texto: 'Pesquisar o Pix: ler Resolução BCB nº 403/2023 e relatório FEBRABAN 2024 (documentos que entrarão na base RAG)', tags: ['pesquisa'] },
+        { id: 'm1_p2_0c', texto: 'Ler 3 artigos sobre detecção de fraude financeira com ML (Google Scholar: "Pix fraud detection" e "financial fraud machine learning")', tags: ['pesquisa'] },
+        { id: 'm1_p2_0d', texto: 'Entender RAG: o que é, como funciona (retriever → embeddings → LLM) e por que é útil para explicar fraudes', tags: ['pesquisa'] },
+        { id: 'm1_p2_1', texto: 'Levantar 15+ referências bibliográficas e organizar no Zotero ou Google Docs', tags: ['pesquisa'] },
         { id: 'm1_p2_2', texto: 'Criar documento compartilhado no Overleaf ou Google Docs para o TCC', tags: ['escrita'] },
-        { id: 'm1_p2_3', texto: 'Redigir rascunho inicial do Capítulo 1 — Introdução (contexto, problema, objetivo)', tags: ['escrita'] },
-        { id: 'm1_p2_4', texto: 'Mapear artigos sobre detecção de fraude com ML: listar abordagens e resultados do estado da arte', tags: ['pesquisa'] },
-        { id: 'm1_p2_5', texto: 'Criar repositório Git compartilhado e definir convenção de branches (ex: feature/, fix/, docs/)', tags: ['codigo'] },
+        { id: 'm1_p2_3', texto: 'Redigir rascunho do Capítulo 1 — Introdução: contexto Pix, problema, objetivos', tags: ['escrita'] },
+        { id: 'm1_p2_4', texto: 'Criar repositório Git compartilhado e definir convenção de branches', tags: ['codigo'] },
       ],
       ambos: [
-        { id: 'm1_ab_0', texto: 'Ler juntos o data dictionary do Kaggle e discutir: quais colunas fazem sentido intuitivo? quais são completamente opacas?', tags: ['pesquisa'] },
-        { id: 'm1_ab_1', texto: 'Reunião de kickoff: definir escopo exato, objetivos, cronograma interno e responsabilidades', tags: ['entregavel'] },
-        { id: 'm1_ab_2', texto: 'Entrega: Proposta de TCC protocolada na coordenação', tags: ['entregavel'] },
+        { id: 'm1_ab_0', texto: 'Ler juntos o dicionário de dados (reports/dicionario_dados.docx) e discutir quais colunas mapear para contexto Pix', tags: ['pesquisa'] },
+        { id: 'm1_ab_1', texto: 'Reunião de kickoff: definir responsabilidades, cronograma interno e ferramentas (LLM, banco vetorial)', tags: ['entregavel'] },
+        { id: 'm1_ab_2', texto: 'Entrega: Proposta de TCC protocolada na coordenação ✓ (já feita)', tags: ['entregavel'] },
       ]
     }
   },
@@ -741,26 +734,27 @@ const MESES = [
     id: 'junho',
     label: 'Junho',
     ano: 2026,
-    titulo: 'Pré-processamento & Baseline',
-    subtitulo: 'Tratamento de dados, features e primeiro modelo',
+    titulo: 'Dataset Pix Simulado & Baseline',
+    subtitulo: 'Engenharia de features Pix, SMOTE e primeiros modelos',
     tarefas: {
       p1: [
-        { id: 'm2_p1_1', texto: 'Implementar src/features/preprocessor.py (imputação, encoding, escalonamento)', tags: ['codigo'] },
-        { id: 'm2_p1_2', texto: 'Aplicar SMOTE para balanceamento (imbalanced-learn)', tags: ['codigo'] },
-        { id: 'm2_p1_3', texto: 'Criar pipeline scikit-learn reproduzível com train/val/test split estratificado', tags: ['codigo'] },
-        { id: 'm2_p1_4', texto: 'Treinar modelo baseline: Regressão Logística e Random Forest', tags: ['codigo'] },
-        { id: 'm2_p1_5', texto: 'Notebook 02_preprocessing.ipynb documentado', tags: ['entregavel'] },
+        { id: 'm2_p1_1', texto: 'Criar src/features/pix_features.py: engenharia de features inspiradas em Pix (hora_suspeita, freq_recente, dispositivo_novo, valor_atipico)', tags: ['codigo'] },
+        { id: 'm2_p1_2', texto: 'Implementar src/features/preprocessor.py: imputação de nulos, encoding de categóricas, escalonamento', tags: ['codigo'] },
+        { id: 'm2_p1_3', texto: 'Aplicar SMOTE e ajuste de pesos de classe (imbalanced-learn)', tags: ['codigo'] },
+        { id: 'm2_p1_4', texto: 'Criar pipeline scikit-learn com train/val/test split estratificado (70/15/15)', tags: ['codigo'] },
+        { id: 'm2_p1_5', texto: 'Treinar baseline: Regressão Logística → medir AUC-ROC, AUC-PR, F1, Recall', tags: ['codigo'] },
+        { id: 'm2_p1_6', texto: 'Notebook 02_preprocessing.ipynb documentado como entregável', tags: ['entregavel'] },
       ],
       p2: [
-        { id: 'm2_p2_1', texto: 'Redigir Capítulo 2 — Revisão Bibliográfica (seção: ML para fraudes)', tags: ['escrita'] },
-        { id: 'm2_p2_2', texto: 'Redigir Capítulo 2 — Revisão Bibliográfica (seção: RAG e LLMs)', tags: ['escrita'] },
-        { id: 'm2_p2_3', texto: 'Estudar arquitetura RAG: LangChain ou LlamaIndex', tags: ['pesquisa'] },
-        { id: 'm2_p2_4', texto: 'Definir métricas de avaliação: F1, AUC-ROC, AUC-PR, Recall a 5% FPR', tags: ['escrita'] },
-        { id: 'm2_p2_5', texto: 'Escrever seção de metodologia — visão geral do sistema híbrido', tags: ['escrita'] },
+        { id: 'm2_p2_1', texto: 'Redigir Capítulo 2 — Revisão Bibliográfica (seção: fraudes no Pix e pagamentos instantâneos)', tags: ['escrita'] },
+        { id: 'm2_p2_2', texto: 'Redigir Capítulo 2 — Revisão Bibliográfica (seção: ML para detecção de fraude)', tags: ['escrita'] },
+        { id: 'm2_p2_3', texto: 'Redigir Capítulo 2 — Revisão Bibliográfica (seção: RAG e LLMs)', tags: ['escrita'] },
+        { id: 'm2_p2_4', texto: 'Estudar LangChain: chains, retrievers e prompt templates', tags: ['pesquisa'] },
+        { id: 'm2_p2_5', texto: 'Escrever seção da Metodologia: visão geral das 3 camadas do protótipo', tags: ['escrita'] },
       ],
       ambos: [
-        { id: 'm2_ab_1', texto: 'Reunião semanal: revisar métricas do baseline e alinhar expectativas', tags: [] },
-        { id: 'm2_ab_2', texto: 'Entrega parcial 1: EDA + Baseline documentados para o orientador', tags: ['entregavel'] },
+        { id: 'm2_ab_1', texto: 'Definir quais features Pix simuladas fazer: mapear colunas IEEE-CIS → conceitos Pix', tags: ['pesquisa'] },
+        { id: 'm2_ab_2', texto: 'Entrega parcial 1: EDA + features Pix documentados para o orientador', tags: ['entregavel'] },
       ]
     }
   },
@@ -768,26 +762,26 @@ const MESES = [
     id: 'julho',
     label: 'Julho',
     ano: 2026,
-    titulo: 'Modelos Avançados & Explicabilidade',
-    subtitulo: 'XGBoost, LightGBM, SHAP e otimização',
+    titulo: 'XGBoost, Random Forest & SHAP',
+    subtitulo: 'Modelos principais, comparativo e explicabilidade técnica',
     tarefas: {
       p1: [
-        { id: 'm3_p1_1', texto: 'Treinar XGBoost com Optuna para hyperparameter tuning', tags: ['codigo'] },
-        { id: 'm3_p1_2', texto: 'Treinar LightGBM e comparar com XGBoost (velocidade + AUC-PR)', tags: ['codigo'] },
-        { id: 'm3_p1_3', texto: 'Implementar src/models/evaluator.py com todas as métricas', tags: ['codigo'] },
-        { id: 'm3_p1_4', texto: 'Integrar SHAP: valores globais e por transação individual', tags: ['codigo'] },
-        { id: 'm3_p1_5', texto: 'Notebook 03_models.ipynb com comparativo de todos os modelos', tags: ['entregavel'] },
+        { id: 'm3_p1_1', texto: 'Treinar XGBoost (modelo principal) com Optuna para hyperparameter tuning', tags: ['codigo'] },
+        { id: 'm3_p1_2', texto: 'Treinar Random Forest (modelo comparativo) e comparar AUC-PR, F1 e tempo de treino', tags: ['codigo'] },
+        { id: 'm3_p1_3', texto: 'Implementar src/models/evaluator.py: todas as métricas + matriz de confusão + curva PR', tags: ['codigo'] },
+        { id: 'm3_p1_4', texto: 'Aplicar SHAP no XGBoost: importância global (summary plot) e explicação por transação (force plot)', tags: ['codigo'] },
+        { id: 'm3_p1_5', texto: 'Notebook 03_models.ipynb: tabela comparativa XGBoost vs Random Forest vs Baseline', tags: ['entregavel'] },
       ],
       p2: [
-        { id: 'm3_p2_1', texto: 'Estudar e prototipar base de conhecimento RAG (chunks de regras de fraude)', tags: ['pesquisa'] },
-        { id: 'm3_p2_2', texto: 'Criar src/rag/knowledge_base.py com documentos de domínio', tags: ['codigo'] },
-        { id: 'm3_p2_3', texto: 'Integrar embeddings (OpenAI, HuggingFace ou Ollama local)', tags: ['codigo'] },
-        { id: 'm3_p2_4', texto: 'Redigir Capítulo 3 — Metodologia (seção: modelos de ML)', tags: ['escrita'] },
-        { id: 'm3_p2_5', texto: 'Redigir Capítulo 3 — Metodologia (seção: arquitetura RAG)', tags: ['escrita'] },
+        { id: 'm3_p2_1', texto: 'Coletar e organizar documentos para a base RAG: Resolução BCB 403/2023, circulares BACEN, relatório FEBRABAN 2024', tags: ['pesquisa'] },
+        { id: 'm3_p2_2', texto: 'Criar src/rag/knowledge_base.py: chunking dos documentos (500 tokens, overlap 50)', tags: ['codigo'] },
+        { id: 'm3_p2_3', texto: 'Implementar embeddings com sentence-transformers (modelo: paraphrase-multilingual-MiniLM)', tags: ['codigo'] },
+        { id: 'm3_p2_4', texto: 'Criar banco vetorial FAISS com os chunks dos documentos regulatórios', tags: ['codigo'] },
+        { id: 'm3_p2_5', texto: 'Redigir Metodologia — Camada 2: SHAP (como funciona, por que foi escolhido)', tags: ['escrita'] },
       ],
       ambos: [
-        { id: 'm3_ab_1', texto: 'Definir qual LLM usar no RAG: GPT-4o-mini, Gemini ou Llama local', tags: ['pesquisa'] },
-        { id: 'm3_ab_2', texto: 'Entrega parcial 2: Resultados dos modelos ML para o orientador', tags: ['entregavel'] },
+        { id: 'm3_ab_1', texto: 'Definir LLM para o RAG: Claude API (claude-haiku-4-5) ou Llama 3 local via Ollama', tags: ['pesquisa'] },
+        { id: 'm3_ab_2', texto: 'Entrega parcial 2: resultados dos modelos ML para o orientador', tags: ['entregavel'] },
       ]
     }
   },
@@ -795,26 +789,26 @@ const MESES = [
     id: 'agosto',
     label: 'Agosto',
     ano: 2026,
-    titulo: 'Pipeline RAG & Integração',
-    subtitulo: 'Geração de explicações em linguagem natural',
+    titulo: 'Pipeline RAG + Streamlit',
+    subtitulo: 'Integração SHAP→RAG→LLM e interface de demonstração',
     tarefas: {
       p1: [
-        { id: 'm4_p1_1', texto: 'Implementar src/rag/retriever.py (busca vetorial por similaridade)', tags: ['codigo'] },
-        { id: 'm4_p1_2', texto: 'Implementar src/rag/explainer.py (SHAP → contexto → prompt → LLM)', tags: ['codigo'] },
-        { id: 'm4_p1_3', texto: 'Criar pipeline completo: transação → score ML → features SHAP → explicação RAG', tags: ['codigo'] },
-        { id: 'm4_p1_4', texto: 'Notebook 04_rag_pipeline.ipynb com exemplos de fraude explicada', tags: ['entregavel'] },
-        { id: 'm4_p1_5', texto: 'Escrever testes unitários em tests/ (cobertura mínima 60%)', tags: ['codigo'] },
+        { id: 'm4_p1_1', texto: 'Implementar src/rag/retriever.py: busca vetorial no FAISS por similaridade de cosseno', tags: ['codigo'] },
+        { id: 'm4_p1_2', texto: 'Implementar src/rag/explainer.py: SHAP top-3 → prompt → LLM → explicação em português', tags: ['codigo'] },
+        { id: 'm4_p1_3', texto: 'Criar pipeline completo: transação → XGBoost → SHAP → RAG → explicação textual', tags: ['codigo'] },
+        { id: 'm4_p1_4', texto: 'Notebook 04_rag_pipeline.ipynb: 10 exemplos de fraude explicada com saída do LLM', tags: ['entregavel'] },
+        { id: 'm4_p1_5', texto: 'Escrever testes unitários em tests/ para as 3 camadas (cobertura mínima 60%)', tags: ['codigo'] },
       ],
       p2: [
-        { id: 'm4_p2_1', texto: 'Criar interface simples (Streamlit ou Gradio) para demo do sistema', tags: ['codigo'] },
-        { id: 'm4_p2_2', texto: 'Avaliar qualidade das explicações RAG (relevância, fidelidade ao SHAP)', tags: ['pesquisa'] },
-        { id: 'm4_p2_3', texto: 'Redigir Capítulo 3 — Metodologia completo (revisão e complementos)', tags: ['escrita'] },
-        { id: 'm4_p2_4', texto: 'Coletar exemplos de explicações para o Capítulo 4 — Resultados', tags: ['escrita'] },
-        { id: 'm4_p2_5', texto: 'Criar figuras e tabelas comparativas para o TCC', tags: ['escrita'] },
+        { id: 'm4_p2_1', texto: 'Desenvolver interface Streamlit (app.py): entrada de transação → resultado ML → explicação RAG', tags: ['codigo'] },
+        { id: 'm4_p2_2', texto: 'Avaliar qualidade das explicações: relevância dos docs recuperados, coerência com SHAP, ausência de alucinações', tags: ['pesquisa'] },
+        { id: 'm4_p2_3', texto: 'Redigir Metodologia — Camada 3: RAG (arquitetura, documentos, LLM escolhido)', tags: ['escrita'] },
+        { id: 'm4_p2_4', texto: 'Documentar exemplos de saída do sistema para o Capítulo 4 — Resultados', tags: ['escrita'] },
+        { id: 'm4_p2_5', texto: 'Criar figuras da arquitetura do protótipo (fluxograma das 3 camadas)', tags: ['escrita'] },
       ],
       ambos: [
-        { id: 'm4_ab_1', texto: 'Teste de integração: validar sistema de ponta a ponta com 100 transações', tags: ['codigo'] },
-        { id: 'm4_ab_2', texto: 'Entrega parcial 3: sistema integrado funcionando para o orientador', tags: ['entregavel'] },
+        { id: 'm4_ab_1', texto: 'Teste de integração: rodar o sistema completo de ponta a ponta com 50 transações suspeitas', tags: ['codigo'] },
+        { id: 'm4_ab_2', texto: 'Entrega parcial 3: protótipo funcionando demonstrado para o orientador via Streamlit', tags: ['entregavel'] },
       ]
     }
   },
@@ -822,26 +816,26 @@ const MESES = [
     id: 'setembro',
     label: 'Setembro',
     ano: 2026,
-    titulo: 'Escrita, Revisão & Validação Final',
-    subtitulo: 'Texto completo, experimentos finais e formatação',
+    titulo: 'Escrita, Avaliação & Formatação',
+    subtitulo: 'Texto completo, experimentos finais e ABNT',
     tarefas: {
       p1: [
-        { id: 'm5_p1_1', texto: 'Redigir Capítulo 4 — Resultados e Discussão (tabelas, gráficos, análise)', tags: ['escrita'] },
-        { id: 'm5_p1_2', texto: 'Rodar experimentos finais com dataset completo e documentar', tags: ['codigo'] },
-        { id: 'm5_p1_3', texto: 'Gerar todas as figuras finais do TCC em alta resolução (300 dpi)', tags: ['codigo'] },
-        { id: 'm5_p1_4', texto: 'Revisar e refatorar código (documentação, docstrings, README.md)', tags: ['codigo'] },
-        { id: 'm5_p1_5', texto: 'Publicar código no GitHub (repositório público com LICENSE MIT)', tags: ['entregavel'] },
+        { id: 'm5_p1_1', texto: 'Redigir Capítulo 4 — Resultados: tabela comparativa de modelos, SHAP plots, exemplos de explicação RAG', tags: ['escrita'] },
+        { id: 'm5_p1_2', texto: 'Rodar experimentos finais com dataset completo e registrar todos os resultados', tags: ['codigo'] },
+        { id: 'm5_p1_3', texto: 'Gerar todas as figuras do TCC em alta resolução (300 dpi): curvas PR, SHAP summary, arquitetura', tags: ['codigo'] },
+        { id: 'm5_p1_4', texto: 'Revisar código: docstrings, README.md, garantir que pipeline roda do zero em máquina limpa', tags: ['codigo'] },
+        { id: 'm5_p1_5', texto: 'Tornar repositório GitHub público com LICENSE MIT e README completo', tags: ['entregavel'] },
       ],
       p2: [
-        { id: 'm5_p2_1', texto: 'Redigir Capítulo 1 — Introdução (versão final com contexto completo)', tags: ['escrita'] },
-        { id: 'm5_p2_2', texto: 'Redigir Capítulo 5 — Conclusão, Limitações e Trabalhos Futuros', tags: ['escrita'] },
-        { id: 'm5_p2_3', texto: 'Formatar TCC nas normas ABNT (margens, fonte, numeração, sumário)', tags: ['escrita'] },
-        { id: 'm5_p2_4', texto: 'Revisar referências bibliográficas (ABNT NBR 6023)', tags: ['escrita'] },
-        { id: 'm5_p2_5', texto: 'Formatar artigo no template da conferência/revista alvo (LaTeX ou Word)', tags: ['entregavel'] },
+        { id: 'm5_p2_1', texto: 'Redigir Capítulo 1 — Introdução final: contextualizar Pix, problema, objetivos e contribuições', tags: ['escrita'] },
+        { id: 'm5_p2_2', texto: 'Redigir Capítulo 5 — Conclusão: resultados alcançados, limitações do protótipo e trabalhos futuros', tags: ['escrita'] },
+        { id: 'm5_p2_3', texto: 'Formatar monografia nas normas ABNT (margens, fonte Times 12, espaçamento, sumário automático)', tags: ['escrita'] },
+        { id: 'm5_p2_4', texto: 'Revisar e formatar referências bibliográficas conforme ABNT NBR 6023', tags: ['escrita'] },
+        { id: 'm5_p2_5', texto: 'Formatar artigo no template da conferência alvo (ENIAC/BRACIS — SBC LaTeX ou Word)', tags: ['entregavel'] },
       ],
       ambos: [
-        { id: 'm5_ab_1', texto: 'Revisão cruzada: cada um revisa a parte do outro e dá feedback', tags: [] },
-        { id: 'm5_ab_2', texto: 'Submeter versão pré-final ao orientador + escolher venue do artigo (SBC, IEEE, etc.)', tags: ['entregavel'] },
+        { id: 'm5_ab_1', texto: 'Revisão cruzada: Letícia revisa a escrita do Lucas, Lucas revisa o código da Letícia', tags: [] },
+        { id: 'm5_ab_2', texto: 'Submeter versão pré-final ao orientador + escolher venue (ENIAC ou BRACIS 2026)', tags: ['entregavel'] },
       ]
     }
   },
@@ -849,22 +843,22 @@ const MESES = [
     id: 'outubro',
     label: 'Outubro',
     ano: 2026,
-    titulo: 'Entrega & Defesa',
-    subtitulo: 'Submissão final, banca e apresentação',
+    titulo: 'Entrega Final & Artigo',
+    subtitulo: 'Submissão do TCC e do artigo científico',
     tarefas: {
       p1: [
-        { id: 'm6_p1_1', texto: 'Incorporar correções finais do orientador no texto', tags: ['escrita'] },
-        { id: 'm6_p1_2', texto: 'Garantir que todos os testes passam e o pipeline roda do zero', tags: ['codigo'] },
-        { id: 'm6_p1_3', texto: 'Revisar experimentos finais e garantir reprodutibilidade total do pipeline', tags: ['codigo'] },
+        { id: 'm6_p1_1', texto: 'Incorporar correções finais do orientador no texto e no código', tags: ['escrita'] },
+        { id: 'm6_p1_2', texto: 'Garantir reprodutibilidade total: pipeline roda do zero em máquina limpa com um comando', tags: ['codigo'] },
+        { id: 'm6_p1_3', texto: 'Fazer tag de release no GitHub (v1.0.0) para registrar versão entregue', tags: ['codigo'] },
       ],
       p2: [
-        { id: 'm6_p2_1', texto: 'Revisão ortográfica e gramatical final (Grammarly ou ferramenta similar)', tags: ['escrita'] },
+        { id: 'm6_p2_1', texto: 'Revisão ortográfica e gramatical final do TCC completo', tags: ['escrita'] },
         { id: 'm6_p2_2', texto: 'Gerar PDF final e submeter no sistema da universidade', tags: ['entregavel'] },
-        { id: 'm6_p2_3', texto: 'Revisar carta de submissão do artigo e checklist da revista/conferência alvo', tags: ['escrita'] },
+        { id: 'm6_p2_3', texto: 'Finalizar artigo: ajustar resultados, revisão final, carta de submissão', tags: ['escrita'] },
       ],
       ambos: [
         { id: 'm6_ab_1', texto: '🏆 ENTREGA FINAL do TCC na coordenação', tags: ['entregavel'] },
-        { id: 'm6_ab_2', texto: '📄 SUBMISSÃO do artigo para a conferência/revista escolhida', tags: ['entregavel'] },
+        { id: 'm6_ab_2', texto: '📄 SUBMISSÃO do artigo para ENIAC ou BRACIS 2026', tags: ['entregavel'] },
       ]
     }
   }
