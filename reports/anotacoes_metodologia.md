@@ -27,4 +27,15 @@ Objetivo: virar base direta de parágrafos do TCC (principalmente Capítulo 3 �
 - **`train_identity.csv`** — 41 colunas, bem menor (nem toda transação tem linha de identidade). Chave `TransactionID` faz o *left join* com a tabela principal. Colunas: `id_01-id_38` (anônimas, rede/dispositivo), `DeviceType` (mobile/desktop), `DeviceInfo` (modelo/SO — confirmado no preview: pode vir `NaN` mesmo com `DeviceType` preenchido, ou seja, dado incompleto é esperado e precisa ser tratado no pré-processamento).
 - Preview real rodado localmente confirmou a estrutura: linhas de `train_transaction` majoritariamente `isFraud=0`; join por `TransactionID` funciona como esperado entre as duas tabelas.
 
-<!-- Próxima entrada: tarefas m1_p1_0c/0d (grupos de colunas C/D/M/V, features de identidade id_01-id_38) -->
+### Tarefa: Estudar os grupos de colunas C/D/M/V (m1_p1_0c)
+
+Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), **D1–D15** (15), **M1–M9** (9), **V1–V339** (339 — ~86% de todas as 394 colunas). Todas anonimizadas de propósito pela Vesta, sem dicionário oficial — só a categoria geral é conhecida:
+
+- **C1–C14 (contagens)**: ex. quantos endereços/e-mails diferentes associados ao cartão. Sinaliza comportamento "espalhado", comum em fraude (cartão roubado usado em vários lugares).
+- **D1–D15 (deltas de tempo)**: dias entre eventos (última transação, abertura da conta). Captura frequência/recência — golpes tendem a fugir do ritmo normal do usuário.
+- **M1–M9 (matches T/F)**: ex. nome do titular bate com nome de cobrança, endereço bate com o do cartão. Sinaliza inconsistência de identidade, ligado a clonagem/conta comprometida.
+- **V1–V339 (features Vesta)**: engenharia própria da Vesta, numéricas, sem nome nem explicação — "caixa-preta". Só o modelo + SHAP conseguem apontar quais pesam na decisão.
+
+**Por que importa pro TCC**: sem significado semântico, o pré-processamento (junho) precisa ser estatístico (nulos por grupo, correlação entre V's pra reduzir redundância) — e é o SHAP que depois "traduz" quais colunas anônimas pesaram em cada decisão.
+
+<!-- Próxima entrada: tarefa m1_p1_0d (features de identidade id_01-id_38, DeviceType, DeviceInfo) -->
