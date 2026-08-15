@@ -38,4 +38,18 @@ Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), 
 
 **Por que importa pro TCC**: sem significado semântico, o pré-processamento (junho) precisa ser estatístico (nulos por grupo, correlação entre V's pra reduzir redundância) — e é o SHAP que depois "traduz" quais colunas anônimas pesaram em cada decisão.
 
-<!-- Próxima entrada: tarefa m1_p1_0d (features de identidade id_01-id_38, DeviceType, DeviceInfo) -->
+### Tarefa: Entender as features de identidade (m1_p1_0d)
+
+- **`id_01` a `id_11`**: numéricas, ligadas à conexão de rede (score de risco de IP, proxy/VPN, sinal digital do dispositivo).
+- **`id_12` a `id_38`**: categóricas — flags "Found"/"NotFound", tipo de navegador, resolução de tela, correspondência entre dispositivo salvo e o usado na transação.
+- **`DeviceType`**: mobile ou desktop.
+- **`DeviceInfo`**: texto livre (modelo/SO), alta cardinalidade — precisa de limpeza/agrupamento antes de virar feature categórica.
+
+**Números reais do `train_identity.csv`** (144.233 linhas):
+- `DeviceType`: 85.165 desktop / 55.645 mobile / 3.423 nulos (~2,4% — coluna confiável).
+- `DeviceInfo`: 1.786 valores distintos; top 5 = Windows (47.722), nulo (25.567 = ~17,7%), iOS Device (19.782), MacOS (12.573), Trident/7.0 = IE11 (7.440).
+- Das 38 colunas `id_`, a taxa de nulos varia muito: `id_01` tem 0% nulo, mas `id_07`/`id_08` têm **96,4% de nulos** — praticamente inúteis como estão.
+
+**Por que importa pro TCC**: colunas `id_` com nulo acima de ~90% (ex: id_07/id_08) devem ser descartadas ou viram só uma flag binária "tem dado ou não" no pré-processamento, em vez de imputação — decisão que só foi possível ver rodando os dados reais, não só lendo a documentação do Kaggle.
+
+<!-- Próxima entrada: tarefa m1_p1_3 (rodar 01_eda.ipynb) e m1_p1_4 (documentar achados em reports/eda_summary.txt) -->
