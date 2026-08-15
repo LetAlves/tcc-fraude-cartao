@@ -21,4 +21,10 @@ Objetivo: virar base direta de parágrafos do TCC (principalmente Capítulo 3 �
 
 **Por que importa pro TCC**: base para a engenharia de features Pix de junho (`dispositivo_novo`, `hora_suspeita`, `valor_atipico`) e para a base de conhecimento do RAG de julho (Resolução BCB 403/2023, relatório FEBRABAN descrevem exatamente esses padrões).
 
-<!-- Próxima entrada: tarefas m1_p1_0b/0c/0d (dataset IEEE-CIS: tabelas, grupos de colunas, features de identidade) -->
+### Tarefa: Entender as duas tabelas do dataset IEEE-CIS (m1_p1_0b)
+
+- **`train_transaction.csv`** — 394 colunas, ~590k linhas. Uma linha = uma transação. Principais: `TransactionID` (chave), `isFraud` (alvo, 0/1 — fortemente desbalanceado, ~3,5% fraude), `TransactionDT` (segundos desde um ponto de referência arbitrário, não é data real), `TransactionAmt`, `ProductCD`, `card1-card6` (dados do cartão mascarados), grupos `C1-C14`/`D1-D15`/`M1-M9`/`V1-V339`.
+- **`train_identity.csv`** — 41 colunas, bem menor (nem toda transação tem linha de identidade). Chave `TransactionID` faz o *left join* com a tabela principal. Colunas: `id_01-id_38` (anônimas, rede/dispositivo), `DeviceType` (mobile/desktop), `DeviceInfo` (modelo/SO — confirmado no preview: pode vir `NaN` mesmo com `DeviceType` preenchido, ou seja, dado incompleto é esperado e precisa ser tratado no pré-processamento).
+- Preview real rodado localmente confirmou a estrutura: linhas de `train_transaction` majoritariamente `isFraud=0`; join por `TransactionID` funciona como esperado entre as duas tabelas.
+
+<!-- Próxima entrada: tarefas m1_p1_0c/0d (grupos de colunas C/D/M/V, features de identidade id_01-id_38) -->
