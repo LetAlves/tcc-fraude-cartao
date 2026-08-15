@@ -19,7 +19,7 @@ from pathlib import Path
 import pandas as pd
 from dotenv import load_dotenv
 
-# Carrega variáveis de ambiente (KAGGLE_USERNAME e KAGGLE_KEY do arquivo .env)
+# Carrega variáveis de ambiente (credenciais Kaggle do arquivo .env)
 load_dotenv()
 
 # Configuração básica de log — facilita diagnóstico sem poluir o notebook
@@ -53,37 +53,39 @@ def _baixar_kaggle() -> None:
     """
     Faz download do dataset via API oficial do Kaggle.
 
-    Pré-requisitos:
-        - Pacote `kaggle` instalado.
-        - Variáveis KAGGLE_USERNAME e KAGGLE_KEY definidas no .env
+    Pré-requisitos (qualquer uma das opções de autenticação):
+        - Pacote `kaggle` instalado (v2+).
+        - Token novo: KAGGLE_API_TOKEN no .env, ou arquivo ~/.kaggle/access_token.
+        - Ou credenciais legadas: KAGGLE_USERNAME e KAGGLE_KEY no .env
           (ou em ~/.kaggle/kaggle.json).
         - Aceitar os termos da competição no site do Kaggle.
 
     Raises:
-        EnvironmentError: se as credenciais Kaggle não estiverem configuradas.
+        EnvironmentError: se nenhuma credencial Kaggle estiver configurada.
         RuntimeError: se o download falhar por qualquer outro motivo.
     """
-    # Valida credenciais antes de importar o módulo kaggle
-    usuario = os.getenv("KAGGLE_USERNAME")
-    chave = os.getenv("KAGGLE_KEY")
+    tem_token_novo = bool(os.getenv("KAGGLE_API_TOKEN")) or (Path.home() / ".kaggle" / "access_token").exists()
+    tem_credencial_legada = bool(os.getenv("KAGGLE_USERNAME")) and bool(os.getenv("KAGGLE_KEY"))
 
-    if not usuario or not chave:
+    if not tem_token_novo and not tem_credencial_legada:
         raise EnvironmentError(
             "Credenciais Kaggle não encontradas.\n"
-            "Crie um arquivo .env na raiz do projeto com:\n"
+            "Opção 1 (token novo): defina KAGGLE_API_TOKEN no .env, ou salve o token em "
+            "~/.kaggle/access_token.\n"
+            "Opção 2 (legado): crie um .env na raiz do projeto com:\n"
             "  KAGGLE_USERNAME=seu_usuario\n"
             "  KAGGLE_KEY=sua_chave_api\n"
-            "A chave pode ser gerada em: https://www.kaggle.com/settings → API"
+            "Gere em: https://www.kaggle.com/settings → API"
         )
 
     # Importação tardia: evita falha de import se kaggle não estiver instalado
     try:
-        from kaggle.api.kaggle_api_extended import KaggleApiExtended
+        from kaggle import KaggleApi
     except ImportError as e:
         raise ImportError("Instale o pacote kaggle: pip install kaggle") from e
 
     logger.info("Autenticando na API do Kaggle...")
-    api = KaggleApiExtended()
+    api = KaggleApi()
     api.authenticate()
 
     DATA_RAW.mkdir(parents=True, exist_ok=True)
