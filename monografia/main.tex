@@ -1,0 +1,43 @@
+\documentclass[
+  12pt,
+  openright,
+  oneside,
+  a4paper,
+  brazil
+]{abntex2}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage[alf]{abntex2cite}
+\usepackage[hidelinks]{hyperref}
+
+\titulo{Detecção e Explicação de Risco de Fraude em Contexto Pix com Machine Learning, SHAP e RAG}
+\autor{Letícia Alves \\ Lucas Nogueira}
+\local{Cidade}
+\data{2026}
+\instituicao{%
+  Instituição de Ensino \\
+  Curso de Ciência da Computação}
+\tipotrabalho{Trabalho de Conclusão de Curso}
+\preambulo{Trabalho de Conclusão de Curso apresentado como requisito parcial para obtenção do grau de Bacharel em Ciência da Computação.}
+
+\begin{document}
+\frenchspacing
+
+\imprimircapa
+\imprimirfolhaderosto*
+
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\cleardoublepage
+
+\textual
+\include{capitulos/01_introducao}
+
+\postextual
+\bibliography{referencias}
+
+\end{document}

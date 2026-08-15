@@ -20,6 +20,19 @@ data/processed/
 reports/*.png
 reports/*.txt
 
+# Artefatos de compilação LaTeX/Overleaf
+monografia/*.aux
+monografia/*.bbl
+monografia/*.bcf
+monografia/*.blg
+monografia/*.fdb_latexmk
+monografia/*.fls
+monografia/*.log
+monografia/*.out
+monografia/*.run.xml
+monografia/*.synctex.gz
+monografia/*.toc
+
 # IDEs
 .vscode/
 .idea/
