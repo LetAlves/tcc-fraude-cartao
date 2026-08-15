@@ -40,8 +40,9 @@ GRUPOS = [
         ),
         "colunas": [
             ("isFraud", "int", "0 ou 1",
-             "0 = transação legítima | 1 = fraude confirmada. "
-             "Variável alvo do projeto. Nunca use como feature de entrada."),
+             "Rótulo binário fornecido pela competição: 0 = classe negativa | "
+             "1 = classe de fraude. Não equivale a decisão jurídica sobre Pix e "
+             "nunca deve ser usado como feature de entrada."),
         ],
     },
 
@@ -57,14 +58,15 @@ GRUPOS = [
             ("TransactionID",  "int",   "Ex: 2987000",
              "Chave primária. Usado para fazer o join com train_identity.csv."),
             ("TransactionDT",  "int",   "Ex: 86400 (= 1 dia)",
-             "Segundos decorridos desde uma data-base secreta. "
-             "Para extrair dia da semana e hora, use: dt % 86400 // 3600 = hora do dia."),
+             "Segundos decorridos desde uma referência não divulgada. "
+             "O módulo por 86400 indica posição relativa no ciclo diário; "
+             "não deve ser chamado de hora local sem data-base e fuso."),
             ("TransactionAmt", "float", "Ex: 31.95, 117.00",
-             "Valor da transação em dólares (USD). "
-             "Fraudes tendem a ter valores específicos — analise a distribuição com escala log."),
+             "Valor de pagamento da transação no domínio original. "
+             "Analisar a distribuição e os valores extremos sem presumir padrão causal."),
             ("ProductCD",      "str",   "W, H, C, S, R",
-             "Código do produto/serviço comprado. W é o mais frequente. "
-             "Significado exato não divulgado, mas correlaciona com risco."),
+             "Código de produto. O significado dos códigos não foi divulgado; "
+             "eventuais associações com o alvo precisam ser medidas no treino."),
         ],
     },
 
@@ -73,24 +75,22 @@ GRUPOS = [
         "arquivo": "train_transaction.csv",
         "cor": "cartao",
         "descricao": (
-            "Dados sobre o cartão usado na transação. "
-            "card4 e card6 têm valores legíveis; os demais são codificados pela Vesta."
+            "Informações do cartão no domínio original. card4 e card6 têm categorias "
+            "legíveis; o significado individual de card1, card2, card3 e card5 não foi publicado."
         ),
         "colunas": [
             ("card1", "int",   "Ex: 4150, 9500",
-             "Identificador do tipo de cartão (codificado). Alta cardinalidade — "
-             "considere frequency encoding ou target encoding."),
+             "Atributo codificado de cartão com alta cardinalidade. O significado exato não foi divulgado."),
             ("card2", "float", "Ex: 111, 360, 555",
              "Atributo adicional do cartão (codificado). Muitos valores nulos."),
             ("card3", "float", "Ex: 150, 185",
              "Atributo adicional do cartão (codificado)."),
             ("card4", "str",   "visa, mastercard, american express, discover",
-             "Bandeira do cartão. Mais interpretável que os outros. "
-             "Visa é a mais comum (~60% das transações)."),
+             "Rede/bandeira do cartão no domínio original."),
             ("card5", "float", "Ex: 101, 145, 226",
              "Atributo adicional do cartão (codificado)."),
             ("card6", "str",   "debit, credit, debit or credit, charge card",
-             "Tipo do cartão. Cartões de débito são mais frequentes."),
+             "Tipo do cartão no domínio original."),
         ],
     },
 
@@ -104,17 +104,13 @@ GRUPOS = [
         ),
         "colunas": [
             ("addr1", "float", "Ex: 299, 325, 204",
-             "Região de cobrança (billing region). Codificada numericamente. "
-             "~13% de valores nulos."),
+             "Região de cobrança codificada numericamente."),
             ("addr2", "float", "Ex: 87, 96",
-             "País de cobrança (billing country). "
-             "Baixa variabilidade — maioria das transações é do mesmo país."),
+             "País de cobrança codificado numericamente."),
             ("dist1", "float", "Ex: 0, 9, 298",
-             "Distância entre o endereço de cobrança e o de entrega. "
-             "Distâncias grandes podem indicar fraude. ~60% de nulos."),
+             "Uma das medidas de distância fornecidas no domínio original; definição detalhada não publicada."),
             ("dist2", "float", "Ex: 0, 65",
-             "Segunda medida de distância (entre outros endereços associados). "
-             "~94% de nulos — use com cautela."),
+             "Segunda medida de distância; definição detalhada não publicada e alta presença de nulos."),
         ],
     },
 
@@ -124,15 +120,13 @@ GRUPOS = [
         "cor": "email",
         "descricao": (
             "Domínios de e-mail do comprador (P = purchaser) e do destinatário (R = recipient). "
-            "E-mails anônimos (gmail, yahoo) têm correlação diferente de e-mails corporativos."
+            "Qualquer associação com o alvo deve ser medida, não presumida."
         ),
         "colunas": [
             ("P_emaildomain", "str", "gmail.com, yahoo.com, hotmail.com…",
-             "Domínio do e-mail de quem comprou. "
-             "Domínios menos comuns ou de outros países → maior risco."),
+             "Domínio do e-mail de quem comprou no domínio original."),
             ("R_emaildomain", "str", "gmail.com, anonymous.com…",
-             "Domínio do e-mail do destinatário. "
-             "'anonymous.com' é especialmente relevante — alta taxa de fraude associada."),
+             "Domínio do e-mail do destinatário no domínio original."),
         ],
     },
 
@@ -141,26 +135,12 @@ GRUPOS = [
         "arquivo": "train_transaction.csv",
         "cor": "C",
         "descricao": (
-            "Contagens relacionadas ao histórico do cartão/endereço. "
-            "Exemplos: quantos endereços diferentes já foram associados a esse cartão, "
-            "quantos e-mails diferentes, etc. Significado exato não divulgado pela Vesta, "
-            "mas inferido pela comunidade Kaggle."
+            "Grupo descrito oficialmente como contagens. O evento contado por cada coluna "
+            "não foi divulgado. Interpretações da comunidade são hipóteses e não devem ser "
+            "apresentadas como dicionário factual ou equivalência com sinais Pix."
         ),
         "colunas": [
-            ("C1",  "float", "1–17",    "Nº de endereços associados ao cartão. C1=1 → cartão novo ou pouco usado."),
-            ("C2",  "float", "1–17",    "Nº de endereços encontrados para o cartão (variante de C1)."),
-            ("C3",  "float", "0–26",    "Contagem relacionada ao histórico do cartão (semântica não confirmada)."),
-            ("C4",  "float", "0–15",    "Contagem de transações com o mesmo endereço de entrega."),
-            ("C5",  "float", "0–5",     "Contagem de e-mails diferentes usados com esse cartão."),
-            ("C6",  "float", "1–15",    "Contagem de endereços de cobrança distintos no histórico."),
-            ("C7",  "float", "0–8",     "Contagem de transações recentes (janela de tempo curta)."),
-            ("C8",  "float", "1–16",    "Contagem similar a C1/C2 — possivelmente por janela de tempo diferente."),
-            ("C9",  "float", "0–7",     "Nº de transações com o mesmo endereço de entrega (variante)."),
-            ("C10", "float", "0–14",    "Contagem de dispositivos diferentes usados com esse cartão."),
-            ("C11", "float", "1–17",    "Contagem geral de histórico do cartão."),
-            ("C12", "float", "0–15",    "Contagem de transações negadas anteriores."),
-            ("C13", "float", "1–2918",  "Contagem de transações totais do comprador — alta cardinalidade."),
-            ("C14", "float", "1–33",    "Contagem de endereços distintos (janela longa)."),
+            ("C1–C14", "float", "contagens", "14 atributos de contagem anonimizados; semântica individual não publicada."),
         ],
     },
 
@@ -169,27 +149,11 @@ GRUPOS = [
         "arquivo": "train_transaction.csv",
         "cor": "D",
         "descricao": (
-            "Diferenças de tempo em dias entre eventos relacionados ao cartão/conta. "
-            "D1 é a mais importante: representa há quantos dias o cartão foi visto pela última vez. "
-            "Valores muito altos ou muito baixos podem indicar cartões recém-criados para fraude."
+            "Grupo descrito oficialmente como deltas temporais. Os eventos de origem e destino "
+            "de cada delta não foram publicados. Importância e associação com o alvo dependem do experimento."
         ),
         "colunas": [
-            ("D1",  "float", "0–640",  "Dias desde a transação anterior com esse cartão. "
-                                       "⭐ Uma das features mais correlacionadas com isFraud."),
-            ("D2",  "float", "0–640",  "Dias desde a transação anterior (variante — às vezes igual a D1)."),
-            ("D3",  "float", "0–819",  "Dias desde que o endereço de entrega foi visto pela última vez."),
-            ("D4",  "float", "0–869",  "Dias desde transação anterior (escopo diferente de D1)."),
-            ("D5",  "float", "0–819",  "Dias desde o último uso do e-mail do comprador."),
-            ("D6",  "float", "0–836",  "Variável de tempo (semântica incerta, ~88% nulos)."),
-            ("D7",  "float", "0–843",  "Variável de tempo (~93% nulos)."),
-            ("D8",  "float", "0–1708", "Dias desde o cadastro da conta (inferido pela comunidade)."),
-            ("D9",  "float", "0–1",    "Fração do dia (hora/24) da última transação. Valor entre 0 e 1."),
-            ("D10", "float", "0–876",  "Dias desde última transação no mesmo dispositivo."),
-            ("D11", "float", "0–670",  "Dias desde o cadastro do comprador (~47% nulos)."),
-            ("D12", "float", "0–649",  "Variável de tempo (~94% nulos)."),
-            ("D13", "float", "0–820",  "Variável de tempo (~95% nulos)."),
-            ("D14", "float", "0–855",  "Variável de tempo (~95% nulos)."),
-            ("D15", "float", "0–879",  "Dias desde a última mudança de endereço (~44% nulos)."),
+            ("D1–D15", "float", "deltas temporais", "15 atributos temporais anonimizados; semântica individual não publicada."),
         ],
     },
 
@@ -198,20 +162,13 @@ GRUPOS = [
         "arquivo": "train_transaction.csv",
         "cor": "M",
         "descricao": (
-            "Flags booleanas (True/False/NaN) que indicam se informações batem entre si. "
-            "Por exemplo: o nome no cartão bate com o nome de cobrança? "
-            "Divergências são sinais clássicos de fraude."
+            "Indicadores de correspondência (match) do domínio original. A variável M4 possui "
+            "categorias próprias; as demais aparecem como T/F/ausente. O significado individual não foi publicado."
         ),
         "colunas": [
-            ("M1", "str", "T, F, NaN", "Nome no cartão bate com nome de cobrança."),
-            ("M2", "str", "T, F, NaN", "Atributo de match (semântica não confirmada)."),
-            ("M3", "str", "T, F, NaN", "Endereço de cobrança bate com endereço no cadastro do cartão."),
-            ("M4", "str", "M0–M6",     "Variável de match com múltiplos níveis (não apenas T/F)."),
-            ("M5", "str", "T, F, NaN", "E-mail do comprador bate com e-mail cadastrado no cartão."),
-            ("M6", "str", "T, F, NaN", "Match de outro atributo do cartão."),
-            ("M7", "str", "T, F, NaN", "Match (~86% nulos)."),
-            ("M8", "str", "T, F, NaN", "Match (~87% nulos)."),
-            ("M9", "str", "T, F, NaN", "Match (~87% nulos)."),
+            ("M1–M3", "str", "T, F, NaN", "Indicadores de match anonimizados."),
+            ("M4", "str", "M0–M6, NaN", "Indicador categórico de match com significado não publicado."),
+            ("M5–M9", "str", "T, F, NaN", "Indicadores de match anonimizados."),
         ],
     },
 
@@ -220,22 +177,12 @@ GRUPOS = [
         "arquivo": "train_transaction.csv",
         "cor": "V",
         "descricao": (
-            "339 features proprietárias criadas pela Vesta Corporation. "
-            "São combinações e transformações das outras colunas, "
-            "mais sinais internos de risco que a Vesta não divulga. "
-            "Muitas têm >90% de nulos. Agrupadas por faixas conforme análise da comunidade Kaggle."
+            "339 atributos numéricos engenheirados pela Vesta e anonimizados. A competição "
+            "não publicou agrupamentos semânticos por faixa. Nulos e distribuição devem ser "
+            "medidos coluna a coluna no EDA."
         ),
         "colunas": [
-            ("V1–V11",    "float", "0–1 ou contagens", "Relacionadas ao cartão e histórico de pagamento."),
-            ("V12–V34",   "float", "0–1 ou contagens", "Relacionadas a endereço e localização."),
-            ("V35–V52",   "float", "0–1 ou contagens", "Relacionadas ao dispositivo usado."),
-            ("V53–V74",   "float", "0–1 ou contagens", "Relacionadas ao e-mail do comprador e destinatário."),
-            ("V75–V94",   "float", "0–1 ou contagens", "Relacionadas ao valor da transação (TransactionAmt)."),
-            ("V95–V137",  "float", "0–1 ou contagens", "Relacionadas a janelas de tempo e frequência."),
-            ("V138–V166", "float", "0–1 ou contagens", "Features de contagem derivadas."),
-            ("V167–V278", "float", "0–1 ou contagens", "Features mistas — maior concentração de nulos."),
-            ("V279–V321", "float", "0–1 ou contagens", "Features mistas — correlação com identidade."),
-            ("V322–V339", "float", "0–1 ou contagens", "Últimas features Vesta — menor variância, muitos nulos."),
+            ("V1–V339", "float", "valores numéricos e NaN", "Atributos Vesta anonimizados; semântica individual e por faixa não publicada."),
         ],
     },
 
@@ -244,49 +191,13 @@ GRUPOS = [
         "arquivo": "train_identity.csv",
         "cor": "identidade",
         "descricao": (
-            "Informações sobre o dispositivo, rede e comportamento do usuário. "
-            "Presentes em apenas ~60% das transações (nem toda transação tem identity). "
-            "Muitas colunas têm semântica parcialmente inferida pela comunidade."
+            "Atributos de identidade, rede e assinatura digital do domínio original. "
+            "No treino, existem para 144.233 de 590.540 transações (24,4%). "
+            "A competição não publicou o significado individual de id_01 a id_38."
         ),
         "colunas": [
-            ("id_01", "float", "-5 a 0",            "Score de risco de identidade (negativo = mais seguro)."),
-            ("id_02", "float", "0–526523",           "Score numérico de identidade (possível ID interno)."),
-            ("id_03", "float", "0–824",              "Contagem relacionada à identidade."),
-            ("id_04", "float", "0–429",              "Contagem relacionada à identidade."),
-            ("id_05", "float", "0–480",              "Número de eventos de risco associados à conta."),
-            ("id_06", "float", "-112 a 0",           "Score negativo — quanto menor, mais suspeito."),
-            ("id_07", "float", "0–5",                "Contagem de correspondências de identidade."),
-            ("id_08", "float", "0–5",                "Contagem de correspondências de identidade."),
-            ("id_09", "float", "0–1",                "Flag de verificação de identidade."),
-            ("id_10", "float", "0–1",                "Flag de verificação de identidade."),
-            ("id_11", "float", "100–600",            "Score de conta/sessão."),
-            ("id_12", "str",   "Found, NotFound",    "IP está em base de proxies conhecidos? Found = proxy."),
-            ("id_13", "float", "1–2918",             "Contagem de transações associadas a esse dispositivo."),
-            ("id_14", "float", "-480 a 480",         "Fuso horário do dispositivo (offset em minutos do UTC)."),
-            ("id_15", "str",   "New, Found, Unknown","Status do browser/OS: New = recém-instalado."),
-            ("id_16", "str",   "Found, NotFound",    "Autofill do browser usado? Found = sim."),
-            ("id_17", "float", "100–600",            "Score de sessão/dispositivo."),
-            ("id_18", "float", "0–1",                "Flag de identidade."),
-            ("id_19", "float", "30–600",             "Score relacionado ao histórico do dispositivo."),
-            ("id_20", "float", "30–600",             "Score relacionado ao histórico do dispositivo."),
-            ("id_21", "float", "0–1",                "Flag (~97% nulos)."),
-            ("id_22", "float", "0–1",                "Flag (~97% nulos)."),
-            ("id_23", "str",   "TRANSPARENT",        "Tipo de proxy (~97% nulos)."),
-            ("id_24", "float", "0–15",               "Score de conta (~97% nulos)."),
-            ("id_25", "float", "1–2918",             "Contagem de uso do dispositivo."),
-            ("id_26", "float", "1–2918",             "Contagem de uso do dispositivo."),
-            ("id_27", "str",   "Found, NotFound",    "Verificação adicional de identidade."),
-            ("id_28", "str",   "New, Found",         "Status de conta: New = conta recém-criada."),
-            ("id_29", "str",   "Found, NotFound",    "Cookie habilitado no browser."),
-            ("id_30", "str",   "Ex: Windows 10",     "Sistema operacional e versão do dispositivo."),
-            ("id_31", "str",   "Ex: chrome 75.0",    "Browser e versão. Browsers desatualizados → maior risco."),
-            ("id_32", "float", "Ex: 32",             "Profundidade de cor da tela (bits)."),
-            ("id_33", "str",   "Ex: 1920x1080",      "Resolução da tela. Resoluções incomuns podem indicar bot."),
-            ("id_34", "str",   "match_status:1",     "Status de match de identidade com valor numérico."),
-            ("id_35", "str",   "T, F",               "Cookie de terceiros habilitado."),
-            ("id_36", "str",   "T, F",               "Uso de proxy detectado (complemento de id_12)."),
-            ("id_37", "str",   "T, F",               "Browser mobile."),
-            ("id_38", "str",   "T, F",               "JavaScript habilitado no browser."),
+            ("id_01–id_11", "numérico", "valores e NaN", "Atributos numéricos anonimizados; definição individual não publicada."),
+            ("id_12–id_38", "categórico/numérico", "categorias, valores e NaN", "Atributos anonimizados; preservar nomes e não inferir significado individual."),
         ],
     },
 
@@ -299,10 +210,10 @@ GRUPOS = [
         ),
         "colunas": [
             ("DeviceType", "str", "desktop, mobile",
-             "Tipo do dispositivo. Mobile tem taxa de fraude levemente diferente de desktop."),
+             "Tipo do dispositivo no domínio original. Associação com o alvo deve ser medida."),
             ("DeviceInfo", "str", "Ex: Windows, iOS Device, Samsung…",
-             "Modelo/sistema do dispositivo. Alta cardinalidade — agrupe em categorias "
-             "(iOS, Android, Windows, Mac, Other) para usar como feature."),
+             "Informação textual do dispositivo. Tem alta cardinalidade e valores ausentes; "
+             "qualquer agrupamento precisa de regra documentada."),
         ],
     },
 ]
@@ -473,7 +384,7 @@ def gerar_docx():
         "  dos grupos C, D, M e V.\n\n"
         "• train_identity.csv — 144.233 linhas × 41 colunas\n"
         "  Contém dados sobre o dispositivo e identidade digital do usuário. "
-        "  Presente em ~60% das transações.\n\n"
+        "  Presente em 24,4% das transações de treino.\n\n"
         "• Taxa de fraude: 3,5% (20.663 fraudes de 590.540 transações)\n"
         "• Período coberto: 6 meses (inferido pelos valores de TransactionDT)\n"
         "• Fonte: Vesta Corporation — empresa de serviços de garantia de pagamento"
@@ -500,18 +411,21 @@ def gerar_docx():
         ("Colunas V1–V339 são anônimas",
          "A Vesta não divulgou o significado dessas features. Use análise de importância "
          "(SHAP) para identificar quais são relevantes. Não tente interpretar individualmente."),
-        ("Muitos nulos não são erro",
-         "Colunas como D6, D7, D12–D14 têm >90% de nulos porque nem toda transação gera "
-         "esses eventos. O nulo em si é uma informação — crie uma flag is_null para essas colunas."),
+        ("Muitos nulos não são necessariamente erro",
+         "A ausência pode refletir o processo de coleta. Meça por coluna e valide se indicadores "
+         "de ausência ajudam sem causar vazamento; não presuma a causa do nulo."),
         ("TransactionDT não é hora real",
-         "Você pode extrair padrões de hora do dia (dt % 86400 // 3600) e dia da semana "
-         "(dt // 86400 % 7), mas não sabe a data absoluta."),
-        ("train_identity.csv só tem 60% das transações",
-         "Após o left join, todas as colunas id_ e Device* terão NaN para os 40% sem identity. "
-         "Trate esses NaNs com imputação ou indicadores de ausência."),
+         "O módulo por 86400 permite uma posição cíclica relativa, mas a data-base e o fuso "
+         "não foram divulgados. Não chame o resultado de hora local."),
+        ("train_identity.csv cobre 24,4% do treino",
+         "Após o left join, as colunas id_ e Device* ficam ausentes nas demais transações. "
+         "Imputação e indicadores devem ser ajustados apenas no treino."),
         ("card1–card5 têm alta cardinalidade",
-         "Com milhares de valores únicos, one-hot encoding vai explodir a dimensionalidade. "
-         "Prefira target encoding ou frequency encoding para essas colunas."),
+         "Avalie codificação e memória. Se usar target encoding, calcule-o dentro das partições "
+         "de treino para evitar vazamento do alvo."),
+        ("Colunas anônimas não ganham significado com SHAP",
+         "SHAP mede contribuição para a previsão. Não converta C*, D*, M*, V* ou id_* em "
+         "conceitos Pix sem atributo derivado, definição e validação."),
     ]
 
     for titulo_nota, descricao_nota in notas:
