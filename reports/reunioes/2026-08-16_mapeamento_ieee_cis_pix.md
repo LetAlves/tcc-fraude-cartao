@@ -1,7 +1,7 @@
 # Ata — Mapeamento IEEE-CIS → Pix (tarefa m1_ab_0)
 
 **Data:** 16/08/2026
-**Participantes:** Letícia (confirmação registrada nesta data). Lucas — confirmação ainda pendente de registro.
+**Participantes:** Letícia e Lucas (ambos confirmaram nesta data).
 
 ## Contexto
 
@@ -9,7 +9,7 @@ Leitura técnica e auditoria do dicionário de dados feitas por Lucas em
 [`reports/pessoa_2/maio/05_mapeamento_e_kickoff.md`](../pessoa_2/maio/05_mapeamento_e_kickoff.md).
 Esta ata registra a validação de Letícia sobre os pontos levantados lá.
 
-## Decisões confirmadas por Letícia
+## Decisões confirmadas pela dupla
 
 1. **Cobertura de identidade:** adotar ~24,4% (recalculado direto dos CSVs), substituindo o
    ~60% que estava no dicionário antigo.
@@ -26,7 +26,6 @@ Esta ata registra a validação de Letícia sobre os pontos levantados lá.
 
 ## Pendências
 
-- Confirmação explícita do Lucas sobre os 3 pontos acima.
 - Tarefa m1_ab_1 (reunião de kickoff) segue em aberto: dia da reunião semanal, Overleaf x
   Google Docs, modelo de embeddings, LLM local x remoto, protocolo de revisão de fontes,
   marcos internos e template institucional ainda não foram decididos.
