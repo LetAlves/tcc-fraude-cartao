@@ -59,4 +59,11 @@ Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), 
 
 **Por que importa pro TCC**: colunas com alta ausência são candidatas a comparação entre descarte, indicador de presença e tratamento compatível com o modelo. A decisão deve ser tomada por validação dentro do treino, sem limiar arbitrário e sem consultar o conjunto de teste.
 
-<!-- Próxima entrada: tarefa m1_p1_3 (rodar 01_eda.ipynb) e m1_p1_4 (documentar achados em reports/eda_summary.txt) -->
+### Tarefa: Rodar o EDA e documentar achados (m1_p1_3 / m1_p1_4)
+
+- **Desbalanceamento confirmado no dataset completo**: 590.540 transações, 20.663 fraudes (3,50%), razão 27,6:1. Justifica a escolha de F1/AUC-PR sobre acurácia (já registrado nas dicas do cronograma) e a necessidade de SMOTE/ajuste de peso de classe em junho.
+- **Nulos concentrados nas colunas `id_*`**: `id_24`, `id_25`, `id_07`, `id_08`, `id_21`, `id_26`, `id_27`, `id_23`, `id_22` — todas com ~99% de nulo no dataset *merged* (bem acima dos ~96,4% vistos isoladamente em `train_identity.csv`, porque o merge herda os ~75,6% de transações sem linha de identidade). `dist2` também aparece no topo, com 93,63% de nulo.
+- **Top correlações de Pearson com `isFraud`**: dominadas pelo grupo `V*` — `V257` (0,383), `V246` (0,367), `V244` (0,364), `V242` (0,361), `V201`, `V200`, `V189`, `V188`, `V258`, `V45`. Como o significado individual dessas colunas não é público, o SHAP em julho vai ser o que permite falar sobre *influência* sem inventar semântica — a correlação aqui só orienta prioridade de investigação, não causa.
+- Evidência completa em `reports/eda_summary.txt`, `reports/fig_distribuicao_alvo.png` e `reports/fig_top_correlacoes.png` (gerados por `notebooks/01_eda.ipynb`, execução de 16/08/2026).
+
+**Por que importa pro TCC**: esses três achados (desbalanceamento, padrão de nulos ligado à ausência de identidade, e concentração de sinal no grupo V) formam a ponte direta entre o Capítulo 3 (Metodologia — por que SMOTE, por que AUC-PR) e o Capítulo 4 (Resultados — de onde vêm as features mais fortes do modelo).
