@@ -10,16 +10,16 @@ Objetivo: virar base direta de parágrafos do TCC (principalmente Capítulo 3 �
 ### Tarefa: Ler a proposta e entender a metodologia (m1_p1_0a)
 
 - **SHAP explica o quê**: aponta quais variáveis da transação mais influenciaram a decisão do modelo. É a explicação técnica, específica de cada transação.
-- **RAG explica o que isso significa**: busca documentos regulatórios (BACEN, FEBRABAN) e descrições de padrões de fraude compatíveis com o que o SHAP apontou, e gera a explicação em linguagem natural para o usuário/analista.
-- **Frase-chave para o Capítulo 3**: SHAP = *o quê* (quais variáveis pesaram); RAG = *o que isso significa* (contexto regulatório/humano). Sem o SHAP, o RAG não sabe o que buscar — as duas camadas são complementares, não substitutas.
+- **RAG contextualiza com fontes**: recupera trechos regulatórios, científicos e setoriais relacionados a conceitos com semântica validada e os fornece ao LLM para redigir uma explicação rastreável. O RAG não descobre o significado de uma coluna anônima.
+- **Frase-chave para o Capítulo 3**: SHAP = *o que influenciou o modelo*; RAG = *qual contexto documental verificável ajuda a interpretar a evidência*. A ponte exige um registro de atributos semânticos; nomes anônimos como `V258` não devem virar consultas Pix por suposição.
 
 ### Tarefa: Estudar o contexto Pix — golpes típicos (m1_p1_0e)
 
-- **Golpe do falso funcionário**: fraudador se passa por atendente do banco e convence a vítima a fazer o Pix ou a passar a senha/código. A vítima autoriza a transação por conta própria — não é invasão, é manipulação. Por isso o Pix não tem chargeback automático como o cartão; a devolução só ocorre via **MED (Mecanismo Especial de Devolução)**, criado pela Resolução BCB nº 403/2023, e depende de ação rápida da instituição (~80h após o alerta).
-- **Engenharia social (categoria ampla)**: inclui golpe do parente/emergência (WhatsApp clonado), falso vendedor/comprador em marketplace, QR Code falso substituído, falsas promoções/investimentos. Característica comum: os dados/dispositivo da vítima continuam sendo dela — o que muda é o *comportamento* (transação fora do padrão, destinatário novo, horário incomum). Colunas `D1-D15` (tempo desde última transação) e `C1-C14` (contagens) tentam capturar esse tipo de sinal.
-- **Clonagem de dados/conta**: acesso não autorizado (phishing, malware, SIM swap) — a transação acontece *sem* o conhecimento da vítima, direto pelo app dela. É o cenário de "dispositivo desconhecido logando numa conta antiga", capturado pelas colunas de identidade (`DeviceType`, `DeviceInfo`, `id_01-id_38`) e `M1-M9` (flags de correspondência entre dispositivo/conta).
+- **Golpe do falso funcionário**: fraudador se passa por atendente do banco e convence a vítima a fazer o Pix ou a passar a senha/código. A vítima pode iniciar a transação sob manipulação. O Pix não possui chargeback automático equivalente ao cartão; casos de fundada suspeita de fraude podem seguir o **MED (Mecanismo Especial de Devolução)**, introduzido pela Resolução BCB nº 103/2021. Procedimentos e prazos devem ser citados a partir do Regulamento do Pix e do Guia do MED vigentes na data analisada.
+- **Engenharia social (categoria ampla)**: inclui golpe do parente/emergência, falso vendedor/comprador, QR Code adulterado e falsas promoções ou investimentos. Esses cenários motivam atributos comportamentais explícitos, como desvio de valor e frequência recente. Os grupos `C*` e `D*` podem carregar sinais estatísticos, mas seu significado individual não foi divulgado e não prova um tipo de golpe.
+- **Clonagem de dados/conta**: envolve acesso não autorizado, por exemplo após phishing, malware ou comprometimento de credenciais. `DeviceType` e `DeviceInfo` podem apoiar uma análise de contexto do dispositivo quando presentes; não é válido afirmar que cada `id_*` ou `M*` mede dispositivo novo, conta antiga ou identidade Pix.
 
-**Por que importa pro TCC**: base para a engenharia de features Pix de junho (`dispositivo_novo`, `hora_suspeita`, `valor_atipico`) e para a base de conhecimento do RAG de julho (Resolução BCB 403/2023, relatório FEBRABAN descrevem exatamente esses padrões).
+**Por que importa pro TCC**: orienta hipóteses para atributos comportamentais e a seleção do corpus. Os documentos do BCB sustentam regras e procedimentos; o relatório FEBRABAN fornece contexto setorial. Nenhum deles valida sozinho a correspondência entre uma coluna anônima do IEEE-CIS e um padrão Pix.
 
 ### Tarefa: Entender as duas tabelas do dataset IEEE-CIS (m1_p1_0b)
 
@@ -31,25 +31,32 @@ Objetivo: virar base direta de parágrafos do TCC (principalmente Capítulo 3 �
 
 Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), **D1–D15** (15), **M1–M9** (9), **V1–V339** (339 — ~86% de todas as 394 colunas). Todas anonimizadas de propósito pela Vesta, sem dicionário oficial — só a categoria geral é conhecida:
 
-- **C1–C14 (contagens)**: ex. quantos endereços/e-mails diferentes associados ao cartão. Sinaliza comportamento "espalhado", comum em fraude (cartão roubado usado em vários lugares).
-- **D1–D15 (deltas de tempo)**: dias entre eventos (última transação, abertura da conta). Captura frequência/recência — golpes tendem a fugir do ritmo normal do usuário.
-- **M1–M9 (matches T/F)**: ex. nome do titular bate com nome de cobrança, endereço bate com o do cartão. Sinaliza inconsistência de identidade, ligado a clonagem/conta comprometida.
-- **V1–V339 (features Vesta)**: engenharia própria da Vesta, numéricas, sem nome nem explicação — "caixa-preta". Só o modelo + SHAP conseguem apontar quais pesam na decisão.
+- **C1–C14 (contagens)**: a categoria geral é de contagens. O evento contado por cada coluna não foi publicado; exemplos encontrados na comunidade são hipóteses, não dicionário oficial.
+- **D1–D15 (deltas de tempo)**: a categoria geral é de deltas temporais. Não é seguro atribuir a cada coluna um evento como "abertura da conta" sem fonte.
+- **M1–M9 (matches)**: indicadores de correspondência do domínio original, com significado individual não divulgado. Não equivalem automaticamente a conferências de identidade Pix.
+- **V1–V339 (features Vesta)**: atributos numéricos engenheirados e anonimizados. O modelo e o SHAP indicam influência estatística, mas não recuperam o significado oculto nem estabelecem causalidade.
 
-**Por que importa pro TCC**: sem significado semântico, o pré-processamento (junho) precisa ser estatístico (nulos por grupo, correlação entre V's pra reduzir redundância) — e é o SHAP que depois "traduz" quais colunas anônimas pesaram em cada decisão.
+**Por que importa pro TCC**: sem significado semântico, o pré-processamento deve ser estatístico e documentado. O SHAP mostra quais colunas pesaram na decisão; a explicação em linguagem natural só pode usar conceitos definidos por atributos explícitos ou derivados validados.
+
+### Revisão da Pessoa 2 — correções e ponte SHAP → RAG (m1_p2_0a–0d)
+
+- O MED foi introduzido pela **Resolução BCB nº 103/2021**. A Resolução nº 403 é de 22/07/2024 e não criou o mecanismo.
+- No treino local, `train_identity.csv` cobre **144.233 de 590.540 transações (24,4%)**, e não aproximadamente 60%.
+- O IEEE-CIS é um dataset de comércio eletrônico/cartão usado como proxy técnico; resultados não comprovam desempenho em Pix real.
+- A investigação, referências e regras para o corpus estão em `reports/pessoa_2/maio/`.
 
 ### Tarefa: Entender as features de identidade (m1_p1_0d)
 
-- **`id_01` a `id_11`**: numéricas, ligadas à conexão de rede (score de risco de IP, proxy/VPN, sinal digital do dispositivo).
-- **`id_12` a `id_38`**: categóricas — flags "Found"/"NotFound", tipo de navegador, resolução de tela, correspondência entre dispositivo salvo e o usado na transação.
+- **`id_01` a `id_11`**: atributos numéricos anonimizados. A descrição oficial agrupa as features de identidade, rede e assinatura digital, mas não revela o significado individual de cada `id_*`.
+- **`id_12` a `id_38`**: atributos categóricos ou códigos categóricos anonimizados. Alguns valores observáveis sugerem browser ou resolução, porém não é seguro atribuir uma definição individual sem fonte oficial.
 - **`DeviceType`**: mobile ou desktop.
 - **`DeviceInfo`**: texto livre (modelo/SO), alta cardinalidade — precisa de limpeza/agrupamento antes de virar feature categórica.
 
 **Números reais do `train_identity.csv`** (144.233 linhas):
-- `DeviceType`: 85.165 desktop / 55.645 mobile / 3.423 nulos (~2,4% — coluna confiável).
+- `DeviceType`: 85.165 desktop / 55.645 mobile / 3.423 nulos (~2,4%).
 - `DeviceInfo`: 1.786 valores distintos; top 5 = Windows (47.722), nulo (25.567 = ~17,7%), iOS Device (19.782), MacOS (12.573), Trident/7.0 = IE11 (7.440).
-- Das 38 colunas `id_`, a taxa de nulos varia muito: `id_01` tem 0% nulo, mas `id_07`/`id_08` têm **96,4% de nulos** — praticamente inúteis como estão.
+- Das 38 colunas `id_`, a taxa de nulos varia muito: `id_01` tem 0% nulo, enquanto `id_07`/`id_08` têm **96,4% de nulos**. Alta ausência não prova inutilidade; a presença do dado pode carregar sinal e precisa ser avaliada.
 
-**Por que importa pro TCC**: colunas `id_` com nulo acima de ~90% (ex: id_07/id_08) devem ser descartadas ou viram só uma flag binária "tem dado ou não" no pré-processamento, em vez de imputação — decisão que só foi possível ver rodando os dados reais, não só lendo a documentação do Kaggle.
+**Por que importa pro TCC**: colunas com alta ausência são candidatas a comparação entre descarte, indicador de presença e tratamento compatível com o modelo. A decisão deve ser tomada por validação dentro do treino, sem limiar arbitrário e sem consultar o conjunto de teste.
 
 <!-- Próxima entrada: tarefa m1_p1_3 (rodar 01_eda.ipynb) e m1_p1_4 (documentar achados em reports/eda_summary.txt) -->
