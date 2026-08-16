@@ -47,16 +47,16 @@ Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), 
 
 ### Tarefa: Entender as features de identidade (m1_p1_0d)
 
-- **`id_01` a `id_11`**: numéricas, ligadas à conexão de rede (score de risco de IP, proxy/VPN, sinal digital do dispositivo).
-- **`id_12` a `id_38`**: categóricas — flags "Found"/"NotFound", tipo de navegador, resolução de tela, correspondência entre dispositivo salvo e o usado na transação.
+- **`id_01` a `id_11`**: atributos numéricos anonimizados. A descrição oficial agrupa as features de identidade, rede e assinatura digital, mas não revela o significado individual de cada `id_*`.
+- **`id_12` a `id_38`**: atributos categóricos ou códigos categóricos anonimizados. Alguns valores observáveis sugerem browser ou resolução, porém não é seguro atribuir uma definição individual sem fonte oficial.
 - **`DeviceType`**: mobile ou desktop.
 - **`DeviceInfo`**: texto livre (modelo/SO), alta cardinalidade — precisa de limpeza/agrupamento antes de virar feature categórica.
 
 **Números reais do `train_identity.csv`** (144.233 linhas):
-- `DeviceType`: 85.165 desktop / 55.645 mobile / 3.423 nulos (~2,4% — coluna confiável).
+- `DeviceType`: 85.165 desktop / 55.645 mobile / 3.423 nulos (~2,4%).
 - `DeviceInfo`: 1.786 valores distintos; top 5 = Windows (47.722), nulo (25.567 = ~17,7%), iOS Device (19.782), MacOS (12.573), Trident/7.0 = IE11 (7.440).
-- Das 38 colunas `id_`, a taxa de nulos varia muito: `id_01` tem 0% nulo, mas `id_07`/`id_08` têm **96,4% de nulos** — praticamente inúteis como estão.
+- Das 38 colunas `id_`, a taxa de nulos varia muito: `id_01` tem 0% nulo, enquanto `id_07`/`id_08` têm **96,4% de nulos**. Alta ausência não prova inutilidade; a presença do dado pode carregar sinal e precisa ser avaliada.
 
-**Por que importa pro TCC**: colunas `id_` com nulo acima de ~90% (ex: id_07/id_08) devem ser descartadas ou viram só uma flag binária "tem dado ou não" no pré-processamento, em vez de imputação — decisão que só foi possível ver rodando os dados reais, não só lendo a documentação do Kaggle.
+**Por que importa pro TCC**: colunas com alta ausência são candidatas a comparação entre descarte, indicador de presença e tratamento compatível com o modelo. A decisão deve ser tomada por validação dentro do treino, sem limiar arbitrário e sem consultar o conjunto de teste.
 
 <!-- Próxima entrada: tarefa m1_p1_3 (rodar 01_eda.ipynb) e m1_p1_4 (documentar achados em reports/eda_summary.txt) -->
