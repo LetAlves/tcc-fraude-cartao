@@ -21,7 +21,7 @@ Data da revisão: **15/08/2026**.
 
 | Tarefa | Situação verificável | Próxima ação humana |
 |---|---|---|
-| Ler o dicionário e discutir o mapeamento IEEE-CIS -> Pix | Leitura técnica e auditoria concluídas | Letícia e Lucas devem validar e registrar a decisão conjunta |
+| Ler o dicionário e discutir o mapeamento IEEE-CIS -> Pix | Leitura técnica e auditoria concluídas; validação de Letícia registrada em [`../../reunioes/2026-08-16_mapeamento_ieee_cis_pix.md`](../../reunioes/2026-08-16_mapeamento_ieee_cis_pix.md) | Falta confirmação explícita do Lucas sobre os mesmos pontos |
 | Reunião de kickoff: responsabilidades, calendário e ferramentas | Pauta e decisões recomendadas preparadas | Realizar a reunião e preencher data, participantes e decisões finais |
 | Entregar proposta ao orientador | O guia informa que a proposta já foi aprovada | Anexar protocolo ou retorno do orientador se a instituição exigir |
 
