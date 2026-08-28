@@ -6,7 +6,7 @@ Prova de conceito acadêmica para **detecção e explicação de risco de fraude
 
 > O IEEE-CIS contém transações do domínio de comércio eletrônico/cartão, não transações Pix reais. As features do projeto representam analogias analíticas documentadas. Os experimentos não comprovam desempenho operacional no Pix e o protótipo não deve ser usado para bloquear transações ou acusar pessoas.
 
-[Guia do TCC](https://letalves.github.io/tcc-fraude-pix/) · [Entregas de maio](reports/pessoa_2/maio/README.md) · [Entregas de junho](reports/pessoa_2/junho/README.md) · [Monografia](monografia/README.md) · [Como contribuir](CONTRIBUTING.md)
+[Guia do TCC](https://letalves.github.io/tcc-fraude-pix/) · [Entregas de maio](reports/pessoa_2/maio/README.md) · [Entregas de junho — PR #2](https://github.com/LetAlves/tcc-fraude-pix/pull/2) · [Monografia](monografia/README.md) · [Como contribuir](CONTRIBUTING.md)
 
 ## Arquitetura proposta
 
@@ -19,20 +19,22 @@ Dados IEEE-CIS + features proxy documentadas
 
 O classificador estima risco; SHAP descreve a influência dos atributos; o RAG fornece contexto documental. Uma contribuição SHAP não prova causalidade e uma coluna anônima não ganha significado Pix por ser importante para o modelo.
 
-O [registro de features](config/pix_feature_registry.json) descreve os conceitos controlados que podem alimentar a futura ponte SHAP → RAG.
+O [registro de features proposto no PR #2](https://github.com/LetAlves/tcc-fraude-pix/blob/ff73aa5ce60a5daf43fdf8195d1ac9386ad5718e/config/pix_feature_registry.json) descreve os conceitos controlados que podem alimentar a futura ponte SHAP → RAG.
 
 ## Estado do projeto
 
 Situação verificada nesta versão em **27/08/2026**. Dependências instaladas não significam que todas as camadas já estejam implementadas.
+
+As entregas de junho da Pessoa 2 estão em revisão no [PR #2](https://github.com/LetAlves/tcc-fraude-pix/pull/2), separadas da `main`. Os links dessas entregas abaixo apontam para a versão submetida à revisão, sem depender de arquivos ainda ausentes na branch principal.
 
 | Componente | Situação | Evidência |
 |---|---|---|
 | Download, leitura e junção dos dados | Implementados | [Data loader](src/data_loader.py) |
 | Análise exploratória | Notebook executado | [EDA](notebooks/01_eda.ipynb) |
 | Features Pix simuladas | Quatro conceitos implementados, gerando seis colunas | [Módulo de features](src/features/pix_features.py) e [ata de aprovação](reports/reunioes/2026-08-16_mapeamento_ieee_cis_pix.md) |
-| Estudo de LangChain | Laboratório local com retriever lexical e prompt; sem chamada a LLM | [Guia prático](reports/pessoa_2/junho/01_estudo_langchain.md) |
-| Monografia | Rascunhos dos Capítulos 1, 2 e 3 e bibliografia BibTeX | [Projeto de escrita](monografia/README.md) |
-| Pré-processamento, SMOTE e primeiros modelos | Pendentes de implementação e avaliação | [Protocolo metodológico](reports/pessoa_2/junho/03_metodologia_tres_camadas.md) |
+| Estudo de LangChain | Laboratório local no PR #2; sem chamada a LLM | [Guia prático em revisão](https://github.com/LetAlves/tcc-fraude-pix/blob/ff73aa5ce60a5daf43fdf8195d1ac9386ad5718e/reports/pessoa_2/junho/01_estudo_langchain.md) |
+| Monografia | Capítulo 1 e bibliografia na `main`; Capítulos 2 e 3 no PR #2 | [Projeto de escrita](monografia/README.md) |
+| Pré-processamento, SMOTE e primeiros modelos | Pendentes de implementação e avaliação | [Protocolo metodológico proposto](https://github.com/LetAlves/tcc-fraude-pix/blob/ff73aa5ce60a5daf43fdf8195d1ac9386ad5718e/reports/pessoa_2/junho/03_metodologia_tres_camadas.md) |
 | SHAP integrado, RAG vetorial e interface de demonstração | Planejados | [Arquitetura e RAG](reports/pessoa_2/maio/01_guia_arquitetura_e_rag.md) |
 
 O laboratório de LangChain não é o RAG final. Os textos da monografia ainda exigem revisão da dupla e do orientador; um relatório preparado não comprova seu envio ao orientador.
@@ -117,7 +119,18 @@ O teste usa até 50.000 linhas de cada tabela, calcula as features e imprime um 
 
 Os quatro conceitos são `valor_atipico_cartao_proxy`, `frequencia_recente_cartao_proxy`, `dispositivo_raro_cartao_proxy` e `posicao_ciclo_diario_relativa`. O último inclui também codificações seno e cosseno. `card1` não é uma conta Pix, e o ciclo temporal não representa um horário local conhecido.
 
-### Executar o laboratório de LangChain
+### Acessar as entregas de junho em revisão
+
+O laboratório, o gerador de relatório e seus testes estão na branch do PR #2, não na `main`. Para executá-los com o clone criado na instalação acima, e sem alterações locais pendentes:
+
+```powershell
+git fetch origin
+git switch codex/junho-pessoa-2
+```
+
+Depois de consultar a entrega, `git switch main` retorna à branch principal. Essa troca local não aprova nem mescla o PR.
+
+### Executar o laboratório de LangChain — branch de junho
 
 ```powershell
 .\.venv\Scripts\python.exe -m src.rag.langchain_basics
@@ -125,19 +138,21 @@ Os quatro conceitos são `valor_atipico_cartao_proxy`, `frequencia_recente_carta
 
 Não exige dataset, download de embeddings ou chave de LLM. Recupera documentos didáticos e imprime o prompt montado; não gera uma resposta com modelo de linguagem.
 
-### Reproduzir o relatório de junho
+### Reproduzir o relatório de junho — branch de junho
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/gerar_entrega_junho.py
 ```
 
-Lê colunas selecionadas dos CSVs completos e **atualiza** [a entrega parcial de EDA e features](reports/pessoa_2/junho/04_entrega_parcial_eda_features.md). Para preservar o relatório versionado e gerar uma cópia local:
+Lê colunas selecionadas dos CSVs completos e **atualiza** [a entrega parcial de EDA e features](https://github.com/LetAlves/tcc-fraude-pix/blob/ff73aa5ce60a5daf43fdf8195d1ac9386ad5718e/reports/pessoa_2/junho/04_entrega_parcial_eda_features.md). Para preservar o relatório versionado e gerar uma cópia local:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/gerar_entrega_junho.py --output data/processed/entrega_junho.md
 ```
 
 ## Testes e protocolo experimental
+
+Execute a suíte na branch de junho, após a troca descrita acima. A `main` ainda não contém esses testes; uma execução com zero testes não valida as entregas do PR.
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -v
@@ -158,7 +173,7 @@ Para os próximos experimentos:
 ## Organização do repositório
 
 ```text
-config/                  Registro semântico das features proxy
+config/                  Registro semântico das features proxy (PR #2)
 data/raw/                CSVs originais locais — ignorados pelo Git
 data/processed/          Dados derivados locais — ignorados pelo Git
 docs/                    Guia e cronograma estático do TCC
@@ -169,8 +184,8 @@ scripts/                 Geração de documentos e relatórios
 src/data_loader.py       Download, leitura e junção dos dados
 src/features/            Engenharia de features Pix simuladas
 src/models/              Estrutura reservada para os modelos
-src/rag/                 Laboratório e evolução do RAG
-tests/                   Testes automatizados
+src/rag/                 Estrutura do RAG; laboratório no PR #2
+tests/                   Estrutura de testes; suíte de junho no PR #2
 ```
 
 O organizador colaborativo de tarefas é um projeto separado; este repositório reúne os artefatos acadêmicos e o código do TCC.
