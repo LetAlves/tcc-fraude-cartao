@@ -100,6 +100,16 @@ Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), 
 
 **Por que importa pro TCC**: dá uma justificativa metodológica defensável pro Capítulo 3 sobre por que colunas de cartão explícitas foram descartadas, coerente com a proposta aprovada e com a regra de "papel analítico análogo" já validada com o Lucas.
 
+### Decisão: manter `C1`–`C14`, `D1`–`D15`, `M1`–`M9`, `V1`–`V339` no baseline
+
+Considerou-se excluir os 4 grupos anônimos por serem "muita coluna com dado que não sabemos o que é". Decisão: **manter todos por enquanto**, porque o critério de exclusão do `card4`/`card6` não se aplica aqui.
+
+- Significado desconhecido não é o mesmo problema que significado conhecido sem equivalente em Pix (caso `card4`/`card6`). Colunas anônimas não fazem nenhuma afirmação semântica errada — só carregam sinal estatístico sem narrativa.
+- Evidência concreta contra excluir: as maiores correlações com `isFraud` encontradas no EDA de maio são todas do grupo `V` (`V257`=0,383; `V246`=0,367; `V244`=0,364; `V242`=0,361...). Excluir `V1`–`V339` removeria o sinal preditivo mais forte já identificado no dataset.
+- É exatamente para esse cenário que a Camada 2 (SHAP) existe na arquitetura aprovada: aponta quais variáveis anônimas pesaram na decisão sem exigir que se saiba o que elas significam. A regra de escrita já registrada (maio, m1_p1_0c) continua valendo: usar essas colunas no modelo é permitido; **narrar significado para elas não é**.
+
+**Plano**: treinar o baseline com todas; em julho, usar a importância do SHAP para decidir se vale reduzir o conjunto (ex.: manter só as top-N mais influentes) — corte guiado por evidência do próprio modelo, não por desconforto com a quantidade de colunas.
+
 ### LangChain
 
 O laboratório de junho usa `Document`, um retriever lexical e composição por `Runnable` com `PromptTemplate`. Ele não chama LLM e não é o RAG final. Seu objetivo é validar as interfaces e as restrições antes da inclusão de embeddings e FAISS.
