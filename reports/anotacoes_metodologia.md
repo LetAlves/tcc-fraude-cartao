@@ -67,3 +67,13 @@ Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), 
 - Evidência completa em `reports/eda_summary.txt`, `reports/fig_distribuicao_alvo.png` e `reports/fig_top_correlacoes.png` (gerados por `notebooks/01_eda.ipynb`, execução de 16/08/2026).
 
 **Por que importa pro TCC**: esses três achados (desbalanceamento, padrão de nulos ligado à ausência de identidade, e concentração de sinal no grupo V) formam a ponte direta entre o Capítulo 3 (Metodologia — por que SMOTE, por que AUC-PR) e o Capítulo 4 (Resultados — de onde vêm as features mais fortes do modelo).
+
+### Decisão: excluir `card4` e `card6` do pré-processamento (junho)
+
+- **`card1`–`card6`** são "payment card information" (descrição oficial da Vesta). Dessas, `card1`, `card2`, `card3` e `card5` são numéricas mascaradas, sem significado individual revelado — entram na mesma categoria dos grupos anônimos (`C`/`D`/`M`/`V`), utilizáveis como sinal estatístico com a ressalva de "papel analítico análogo".
+- **`card4`** (bandeira: visa/mastercard/amex/discover) e **`card6`** (crédito/débito) são diferentes: o significado é conhecido, e é **especificamente e exclusivamente do domínio de cartão** — bandeira e tipo crédito/débito não têm conceito equivalente no Pix (que não tem bandeira nem distinção crédito/débito). Diferente de `TransactionAmt` (valor) ou `TransactionDT` (tempo), que são conceitos genéricos de pagamento válidos por analogia, `card4`/`card6` não têm analogia possível — são artefatos do produto "cartão", não do "pagamento" em geral.
+- **Confirmação pela proposta aprovada**: a proposta de TCC aprovada pelo orientador (seção 4.1 "Dataset Experimental") lista explicitamente as features que devem inspirar a adaptação Pix: valor, horário, frequência de transações recentes, tipo de chave Pix, perfil do destinatário, idade da conta, dispositivo conhecido/desconhecido. Bandeira/tipo de cartão não consta nessa lista — `card4`/`card6` estão fora do escopo de features aprovado, não é só uma escolha de conveniência.
+
+**Decisão**: `card4` e `card6` serão excluídos das features usadas no `preprocessor.py`/baseline de junho. `card1`, `card2`, `card3`, `card5` permanecem como candidatos válidos (sinal estatístico anônimo).
+
+**Por que importa pro TCC**: dá uma justificativa metodológica defensável pro Capítulo 3 sobre por que colunas de cartão explícitas foram descartadas, coerente com a proposta aprovada e com a regra de "papel analítico análogo" já validada com o Lucas.
