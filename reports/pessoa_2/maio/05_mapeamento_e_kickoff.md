@@ -89,14 +89,14 @@ Estas são recomendações técnicas, ainda não uma ata aprovada pela dupla.
 
 ### Decisões que a dupla precisa tomar
 
-- [ ] data e frequência da reunião semanal;
-- [ ] Overleaf ou Google Docs como ambiente editorial oficial;
-- [ ] quem cria e compartilha a conta/projeto externo;
-- [ ] modelo de embeddings após teste em português;
-- [ ] LLM remoto ou local, considerando custo, privacidade e reprodutibilidade;
-- [ ] protocolo de revisão de fontes e atualização de normas;
-- [ ] data dos marcos internos antes das entregas ao orientador;
-- [ ] manual/template institucional de TCC.
+- [x] data e frequência da reunião semanal — **domingo, 19h** (ver `reports/reunioes/2026-08-30_kickoff.md`);
+- [x] Overleaf ou Google Docs como ambiente editorial oficial — **Overleaf confirmado**;
+- [x] quem cria e compartilha a conta/projeto externo — **Letícia cria e convida o Lucas**;
+- [x] modelo de embeddings após teste em português — **aprovado**, `src/rag/embeddings.py`;
+- [x] LLM remoto ou local, considerando custo, privacidade e reprodutibilidade — **aprovado**: Claude Haiku 4.5 principal + Ollama fallback (sub-itens operacionais ainda pendentes, ver `reports/pessoa_2/julho/03_decisao_llm.md`);
+- [x] protocolo de revisão de fontes e atualização de normas — **aprovado**, ver `reports/reunioes/2026-08-30_kickoff.md`;
+- [ ] data dos marcos internos antes das entregas ao orientador (sem data definida — lembrete);
+- [ ] manual/template institucional de TCC (sem data definida — lembrete).
 
 ## 6. Modelo de ata a preencher
 
@@ -121,4 +121,4 @@ Próxima reunião:
 
 ## 7. Critério para concluir as tarefas conjuntas
 
-Após a conversa, a dupla deve acrescentar a ata neste arquivo ou em `reports/reunioes/`, registrar as decisões e abrir um pull request. A leitura técnica já foi feita; a **discussão conjunta e o kickoff permanecem pendentes** até haver esse registro.
+Após a conversa, a dupla deve acrescentar a ata neste arquivo ou em `reports/reunioes/`, registrar as decisões e abrir um pull request. **Kickoff concluído em 30/08/2026** — ata em `reports/reunioes/2026-08-30_kickoff.md`. Confirmação do Lucas sobre os itens ainda pendente de registro.

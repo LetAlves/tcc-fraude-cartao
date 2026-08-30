@@ -35,10 +35,10 @@ Se Claude for aprovado:
 
 ## Critérios para a decisão conjunta
 
-- [ ] Letícia e Lucas aprovam Claude Haiku 4.5 como modelo principal ou escolhem a alternativa local.
+- [x] Letícia e Lucas aprovam Claude Haiku 4.5 como modelo principal ou escolhem a alternativa local — **aprovado em 30/08/2026** (Claude Haiku 4.5 principal + Ollama fallback), ver `reports/reunioes/2026-08-30_kickoff.md`. Confirmação do Lucas ainda pendente de registro.
 - [ ] A dupla aprova que apenas dados sintéticos/minimizados podem sair do ambiente local.
 - [ ] Define-se um teto de custo mensal e quem administra a chave.
 - [ ] Se Ollama for exigido, registra-se RAM, VRAM, modelo, quantização e latência no computador de demonstração.
 - [ ] Um conjunto fixo de perguntas compara suporte documental, coerência com SHAP, abstenção e tempo de resposta.
 
-Até esses itens serem resolvidos, `m3_ab_1` deve aparecer como **recomendação pronta, decisão conjunta pendente**.
+O modelo em si está aprovado; os sub-itens operacionais acima (política de dados, custo, chave, hardware, perguntas de comparação) ainda estão em aberto.
