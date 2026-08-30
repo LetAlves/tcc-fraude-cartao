@@ -22,9 +22,19 @@ A primeira camada receberá os atributos preparados e produzirá um pacote com i
 
 \section{Camada 2: explicação local por SHAP}
 
-A segunda camada calculará contribuições SHAP para transações selecionadas \cite{lundberg2017unified}. O artefato explicativo preservará valor-base, valor observado, contribuição, direção, unidade, definição e versões do modelo e do explicador. As contribuições serão interpretadas como influência estatística na previsão, não como causalidade.
+A segunda camada calculará contribuições SHAP para transações selecionadas \cite{lundberg2017unified}. Para XGBoost e Random Forest será utilizado o \texttt{TreeExplainer}, depois de congelados o conjunto de dados, o pré-processamento, a ordem das colunas e a versão do modelo. O conjunto de referência do explicador será derivado apenas do treino e terá amostragem, tamanho e seed registrados. A configuração de dependência entre atributos e a escala explicada --- margem, log-odds ou probabilidade --- também serão documentadas, pois contribuições calculadas em escalas diferentes não são diretamente comparáveis.
 
-Para conectar SHAP ao RAG, as principais contribuições serão convertidas em um pacote de evidências. Somente features com semântica aprovada no registro poderão gerar tags conceituais. Uma coluna anônima poderá ser exibida como atributo de alta influência, mas seu nome não será usado para recuperar uma explicação Pix por suposição.
+Para cada observação, será verificada a propriedade aditiva
+\begin{equation}
+    f(x) \approx E[f(X)] + \sum_{j=1}^{p} \phi_j,
+\end{equation}
+em que $E[f(X)]$ é o valor-base e $\phi_j$ representa a contribuição do atributo $j$ na mesma escala de $f(x)$. A diferença residual deverá permanecer dentro de tolerância numérica previamente registrada. Falhas nessa verificação, valores não finitos ou desalinhamento entre nomes e posições de colunas invalidarão o artefato explicativo.
+
+A análise global ordenará os atributos pela média de $|\phi_j|$ no conjunto avaliado. A análise local incluirá casos representativos de verdadeiro positivo, falso positivo, falso negativo e verdadeiro negativo, preservando valor-base, valor observado, contribuição, direção, unidade, definição, versão do pipeline, versão do modelo e versão do explicador. Essas contribuições serão interpretadas como influência estatística no comportamento do modelo, não como causalidade, culpa ou intenção.
+
+Para conectar SHAP ao RAG, as principais contribuições serão convertidas em um pacote de evidências. Somente features com semântica aprovada no registro poderão gerar tags conceituais. O pacote conterá identificador e versão da feature, valor observado, unidade, contribuição, escala explicada, tag aprovada e advertência de domínio. Uma coluna anônima poderá ser exibida como \emph{atributo anonimizado de alta influência}, mas seu nome não será usado para recuperar uma explicação Pix por suposição.
+
+A avaliação verificará fidelidade numérica, alinhamento das features, cobertura de acertos e erros e consistência entre os valores SHAP e a narrativa posterior. Também serão examinados casos com atributos correlacionados, pois a distribuição de contribuição pode depender da configuração do explicador e do conjunto de referência. Uma explicação fiel ao modelo não garante que o modelo esteja correto, calibrado ou livre de viés; por isso, SHAP será tratado como instrumento de auditoria do classificador e não como validação independente da decisão.
 
 \section{Camada 3: recuperação documental e geração}
 

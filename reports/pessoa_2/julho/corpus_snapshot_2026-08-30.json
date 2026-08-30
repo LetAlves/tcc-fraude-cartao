@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "snapshot_date": "2026-08-30",
+  "purpose": "Evidência versionável da coleta local; os documentos brutos permanecem fora do Git.",
+  "documents": [
+    {
+      "document_id": "bcb-regulamento-pix-resolucao-1-2020",
+      "version_label": "texto consolidado vigente em 2026-04-27",
+      "bytes": 1024363,
+      "sha256": "3d5dd4e7de77ccffe11af4ba4246154b895efce71654d818993731df4de3439a"
+    },
+    {
+      "document_id": "bcb-resolucao-103-2021",
+      "version_label": "publicada em 2021-06-08",
+      "bytes": 27573,
+      "sha256": "2c1d1f6e08249e88621eb8505e195687aea52946fe7e215e10e46ea65a60ae84"
+    },
+    {
+      "document_id": "bcb-guia-med-4-3",
+      "version_label": "4.3",
+      "bytes": 1688228,
+      "sha256": "6cf10117fa8484e50da77c00e168a044d6d46693a76672eaa765b62040184e89"
+    },
+    {
+      "document_id": "febraban-tecnologia-bancaria-2024-volume-1",
+      "version_label": "2024 — volume 1",
+      "bytes": 10731244,
+      "sha256": "ae449a73e05c57d793ff551b830ddefb62dce6156c648781e771f7df733bfa4c"
+    }
+  ]
+}

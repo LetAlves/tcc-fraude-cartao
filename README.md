@@ -6,7 +6,7 @@ Prova de conceito acadêmica para **detecção e explicação de risco de fraude
 
 > O IEEE-CIS contém transações do domínio de comércio eletrônico/cartão, não transações Pix reais. As features do projeto representam analogias analíticas documentadas. Os experimentos não comprovam desempenho operacional no Pix e o protótipo não deve ser usado para bloquear transações ou acusar pessoas.
 
-[Guia do TCC](https://letalves.github.io/tcc-fraude-pix/) · [Entregas de maio](reports/pessoa_2/maio/README.md) · [Entregas de junho — PR #2](https://github.com/LetAlves/tcc-fraude-pix/pull/2) · [Monografia](monografia/README.md) · [Como contribuir](CONTRIBUTING.md)
+[Guia do TCC](https://letalves.github.io/tcc-fraude-pix/) · [Entregas de maio](reports/pessoa_2/maio/README.md) · [Entregas de junho — PR #2](https://github.com/LetAlves/tcc-fraude-pix/pull/2) · [Entregas de julho](reports/pessoa_2/julho/README.md) · [Monografia](monografia/README.md) · [Como contribuir](CONTRIBUTING.md)
 
 ## Arquitetura proposta
 
@@ -23,7 +23,7 @@ O [registro de features proposto no PR #2](https://github.com/LetAlves/tcc-fraud
 
 ## Estado do projeto
 
-Situação verificada nesta versão em **27/08/2026**. Dependências instaladas não significam que todas as camadas já estejam implementadas.
+Situação verificada localmente em **30/08/2026**. As entregas de julho da Pessoa 2 foram validadas pelo responsável e submetidas à revisão da dupla. Dependências instaladas não significam que todas as camadas já estejam implementadas.
 
 As entregas de junho da Pessoa 2 estão em revisão no [PR #2](https://github.com/LetAlves/tcc-fraude-pix/pull/2), separadas da `main`. Os links dessas entregas abaixo apontam para a versão submetida à revisão, sem depender de arquivos ainda ausentes na branch principal.
 
@@ -35,7 +35,8 @@ As entregas de junho da Pessoa 2 estão em revisão no [PR #2](https://github.co
 | Estudo de LangChain | Laboratório local no PR #2; sem chamada a LLM | [Guia prático em revisão](https://github.com/LetAlves/tcc-fraude-pix/blob/ff73aa5ce60a5daf43fdf8195d1ac9386ad5718e/reports/pessoa_2/junho/01_estudo_langchain.md) |
 | Monografia | Capítulo 1 e bibliografia na `main`; Capítulos 2 e 3 no PR #2 | [Projeto de escrita](monografia/README.md) |
 | Pré-processamento, SMOTE e primeiros modelos | Pendentes de implementação e avaliação | [Protocolo metodológico proposto](https://github.com/LetAlves/tcc-fraude-pix/blob/ff73aa5ce60a5daf43fdf8195d1ac9386ad5718e/reports/pessoa_2/junho/03_metodologia_tres_camadas.md) |
-| SHAP integrado, RAG vetorial e interface de demonstração | Planejados | [Arquitetura e RAG](reports/pessoa_2/maio/01_guia_arquitetura_e_rag.md) |
+| RAG vetorial | Implementado e testado localmente; aguarda revisão | [Entregas de julho](reports/pessoa_2/julho/README.md) |
+| SHAP executado e interface de demonstração | Planejados | [Metodologia SHAP](reports/pessoa_2/julho/04_metodologia_shap.md) |
 
 O laboratório de LangChain não é o RAG final. Os textos da monografia ainda exigem revisão da dupla e do orientador; um relatório preparado não comprova seu envio ao orientador.
 
@@ -77,7 +78,7 @@ O download da competição também pode trazer outros CSVs. Se os dois arquivos 
 
 ### Dados e segredos não vão para o Git
 
-- O [.gitignore](.gitignore) exclui `data/raw/`, `data/processed/`, `.venv/` e `.env`.
+- O [.gitignore](.gitignore) exclui `data/raw/`, `data/processed/`, os artefatos de `data/rag/`, `.venv/` e `.env`.
 - Não faça commit dos CSVs, de tokens ou de credenciais; não use `git add -f` para contornar essas exclusões.
 - Cada integrante pode obter os dados com sua própria conta Kaggle. Google Drive e DVC **não estão configurados** neste projeto; qualquer compartilhamento externo deve respeitar as regras da fonte.
 - Código, testes, documentação e estatísticas agregadas podem ser versionados sem incluir o dataset bruto.
@@ -150,6 +151,16 @@ Lê colunas selecionadas dos CSVs completos e **atualiza** [a entrega parcial de
 .\.venv\Scripts\python.exe scripts/gerar_entrega_junho.py --output data/processed/entrega_junho.md
 ```
 
+### Construir e consultar a base RAG de julho
+
+```powershell
+.\.venv\Scripts\python.exe scripts\download_rag_corpus.py --refresh
+.\.venv\Scripts\python.exe scripts\build_rag_index.py
+.\.venv\Scripts\python.exe scripts\query_rag_index.py "Como funciona o MED?" --k 5
+```
+
+Os documentos oficiais, chunks e vetores são artefatos locais ignorados pelo Git. O catálogo de fontes, o código, os testes e o snapshot de hashes são versionáveis. Depois do primeiro download do modelo, use `scripts\build_rag_index.py --offline` para reconstruir sem acesso ao Hugging Face.
+
 ## Testes e protocolo experimental
 
 Execute a suíte na branch de junho, após a troca descrita acima. A `main` ainda não contém esses testes; uma execução com zero testes não valida as entregas do PR.
@@ -173,7 +184,7 @@ Para os próximos experimentos:
 ## Organização do repositório
 
 ```text
-config/                  Registro semântico das features proxy (PR #2)
+config/                  Registro de features e catálogo das fontes RAG
 data/raw/                CSVs originais locais — ignorados pelo Git
 data/processed/          Dados derivados locais — ignorados pelo Git
 docs/                    Guia e cronograma estático do TCC
@@ -184,8 +195,8 @@ scripts/                 Geração de documentos e relatórios
 src/data_loader.py       Download, leitura e junção dos dados
 src/features/            Engenharia de features Pix simuladas
 src/models/              Estrutura reservada para os modelos
-src/rag/                 Estrutura do RAG; laboratório no PR #2
-tests/                   Estrutura de testes; suíte de junho no PR #2
+src/rag/                 Laboratório LangChain, ingestão, embeddings e FAISS
+tests/                   Testes das entregas de junho e julho
 ```
 
 O organizador colaborativo de tarefas é um projeto separado; este repositório reúne os artefatos acadêmicos e o código do TCC.
