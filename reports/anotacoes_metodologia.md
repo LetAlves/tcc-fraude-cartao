@@ -68,7 +68,29 @@ Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), 
 
 **Por que importa pro TCC**: esses três achados (desbalanceamento, padrão de nulos ligado à ausência de identidade, e concentração de sinal no grupo V) formam a ponte direta entre o Capítulo 3 (Metodologia — por que SMOTE, por que AUC-PR) e o Capítulo 4 (Resultados — de onde vêm as features mais fortes do modelo).
 
-### Decisão: excluir `card4` e `card6` do pré-processamento (junho)
+---
+
+## Junho — Dataset proxy, baseline planejado e desenho das três camadas
+
+### Evidência reproduzida para a entrega parcial
+
+- `train_transaction.csv`: 590.540 linhas, 394 colunas e 20.663 fraudes marcadas (3,499%);
+- razão entre linhas legítimas e fraude: 27,6:1;
+- `train_identity.csv`: 144.233 linhas e cobertura de 24,424% das transações;
+- `TransactionDT`: aproximadamente 182 dias de extensão relativa, sem data civil publicada;
+- mediana de `TransactionAmt`: 68,50 nas linhas legítimas e 75,00 nas linhas marcadas como fraude; diferença descritiva, não causal.
+
+### Decisão metodológica e registro aprovado
+
+- usar corte temporal como avaliação principal e registrar qualquer análise estratificada aleatória apenas como complemento;
+- ajustar toda transformação e reamostragem somente no treino;
+- comparar ponderação de classe e SMOTE em pipelines separados;
+- escolher limiar na validação, nunca no teste;
+- usar somente features do registro versionado como ponte semântica SHAP→RAG;
+- manter somente as quatro features aprovadas pela dupla em 16/08/2026 como ponte semântica: valor atípico, frequência recente, dispositivo raro e ciclo diário relativo, todas explicitamente qualificadas como proxies do IEEE-CIS;
+- usar a implementação causal de `src/features/pix_features.py`, sem consultar alvo ou eventos futuros.
+
+### Decisão: excluir `card4` e `card6` do pré-processamento
 
 - **`card1`–`card6`** são "payment card information" (descrição oficial da Vesta). Dessas, `card1`, `card2`, `card3` e `card5` são numéricas mascaradas, sem significado individual revelado — entram na mesma categoria dos grupos anônimos (`C`/`D`/`M`/`V`), utilizáveis como sinal estatístico com a ressalva de "papel analítico análogo".
 - **`card4`** (bandeira: visa/mastercard/amex/discover) e **`card6`** (crédito/débito) são diferentes: o significado é conhecido, e é **especificamente e exclusivamente do domínio de cartão** — bandeira e tipo crédito/débito não têm conceito equivalente no Pix (que não tem bandeira nem distinção crédito/débito). Diferente de `TransactionAmt` (valor) ou `TransactionDT` (tempo), que são conceitos genéricos de pagamento válidos por analogia, `card4`/`card6` não têm analogia possível — são artefatos do produto "cartão", não do "pagamento" em geral.
@@ -77,3 +99,11 @@ Contagem real confirmada no `train_transaction.csv`: **C1–C14** (14 colunas), 
 **Decisão**: `card4` e `card6` serão excluídos das features usadas no `preprocessor.py`/baseline de junho. `card1`, `card2`, `card3`, `card5` permanecem como candidatos válidos (sinal estatístico anônimo).
 
 **Por que importa pro TCC**: dá uma justificativa metodológica defensável pro Capítulo 3 sobre por que colunas de cartão explícitas foram descartadas, coerente com a proposta aprovada e com a regra de "papel analítico análogo" já validada com o Lucas.
+
+### LangChain
+
+O laboratório de junho usa `Document`, um retriever lexical e composição por `Runnable` com `PromptTemplate`. Ele não chama LLM e não é o RAG final. Seu objetivo é validar as interfaces e as restrições antes da inclusão de embeddings e FAISS.
+
+### Frase-chave para o Capítulo 3
+
+O protocolo separa três evidências: o classificador estima risco; SHAP registra influências locais; o RAG recupera contexto documental. A geração em linguagem natural deve permanecer subordinada às duas evidências e se abster quando o suporte for insuficiente.
