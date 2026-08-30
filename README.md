@@ -23,7 +23,7 @@ O [registro de features proposto no PR #2](https://github.com/LetAlves/tcc-fraud
 
 ## Estado do projeto
 
-Situação verificada localmente em **30/08/2026**. As entregas de julho ainda aguardam validação antes de qualquer commit. Dependências instaladas não significam que todas as camadas já estejam implementadas.
+Situação verificada localmente em **30/08/2026**. As entregas de julho da Pessoa 2 foram validadas pelo responsável e submetidas à revisão da dupla. Dependências instaladas não significam que todas as camadas já estejam implementadas.
 
 As entregas de junho da Pessoa 2 estão em revisão no [PR #2](https://github.com/LetAlves/tcc-fraude-pix/pull/2), separadas da `main`. Os links dessas entregas abaixo apontam para a versão submetida à revisão, sem depender de arquivos ainda ausentes na branch principal.
 
