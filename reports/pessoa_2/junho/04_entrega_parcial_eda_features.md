@@ -38,9 +38,9 @@ Status do registro: `approved_and_implemented`.
 
 | ID | Conceito controlado | Colunas-fonte | Advertência obrigatória |
 |---|---|---|---|
-| `valor_atipico_cartao_proxy` | desvio robusto do valor no histórico proxy | `TransactionAmt`, `card1`, `TransactionDT` | card1 é um identificador mascarado do domínio original, não uma conta ou chave Pix. |
-| `frequencia_recente_cartao_proxy` | frequência recente no identificador proxy | `card1`, `TransactionDT` | A janela usa o relógio relativo do dataset e não representa necessariamente um dia civil Pix. |
-| `dispositivo_raro_cartao_proxy` | raridade do dispositivo no histórico proxy | `card1`, `DeviceInfo`, `TransactionDT` | Raridade estatística não equivale a dispositivo comprometido, novo ou associado a fraude. |
+| `valor_atipico_proxy` | desvio robusto do valor no histórico proxy | `TransactionAmt`, `card1`, `TransactionDT` | card1 é um identificador mascarado do domínio original, não uma conta ou chave Pix. |
+| `frequencia_recente_proxy` | frequência recente no identificador proxy | `card1`, `TransactionDT` | A janela usa o relógio relativo do dataset e não representa necessariamente um dia civil Pix. |
+| `dispositivo_raro_proxy` | raridade do dispositivo no histórico proxy | `card1`, `DeviceInfo`, `TransactionDT` | Raridade estatística não equivale a dispositivo comprometido, novo ou associado a fraude. |
 | `posicao_ciclo_diario_relativa` | posição cíclica temporal relativa | `TransactionDT` | A origem e o fuso de TransactionDT não são publicados; a feature não representa horário local. |
 
 O arquivo-fonte completo, incluindo fórmula, janela, tratamento de nulos, controle de vazamento e tags do RAG, está em `config/pix_feature_registry.json`.

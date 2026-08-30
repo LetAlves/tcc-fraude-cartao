@@ -117,7 +117,7 @@ A EDA completa exige mais memória que os testes com amostras. Execute as célul
 
 O teste usa até 50.000 linhas de cada tabela, calcula as features e imprime um resumo. Ele não treina modelos nem grava automaticamente um novo dataset.
 
-Os quatro conceitos são `valor_atipico_cartao_proxy`, `frequencia_recente_cartao_proxy`, `dispositivo_raro_cartao_proxy` e `posicao_ciclo_diario_relativa`. O último inclui também codificações seno e cosseno. `card1` não é uma conta Pix, e o ciclo temporal não representa um horário local conhecido.
+Os quatro conceitos são `valor_atipico_proxy`, `frequencia_recente_proxy`, `dispositivo_raro_proxy` e `posicao_ciclo_diario_relativa`. O último inclui também codificações seno e cosseno. `card1` não é uma conta Pix, e o ciclo temporal não representa um horário local conhecido.
 
 ### Acessar as entregas de junho em revisão
 

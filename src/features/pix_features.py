@@ -6,9 +6,9 @@ Implementa os 4 atributos derivados validados na ata de mapeamento de
 sua vez seguem as ressalvas documentadas em
 reports/pessoa_2/maio/05_mapeamento_e_kickoff.md (seção 4):
 
-    - valor_atipico_cartao_proxy
-    - frequencia_recente_cartao_proxy
-    - dispositivo_raro_cartao_proxy
+    - valor_atipico_proxy
+    - frequencia_recente_proxy
+    - dispositivo_raro_proxy
     - posicao_ciclo_diario_relativa
 
 Regra de linguagem (decisão da dupla): cada atributo é um "papel analítico
@@ -54,7 +54,7 @@ def _mediana_expandida_causal(serie_ordenada: pd.Series, chave_grupo: pd.Series)
 
 # ─── Atributos derivados ────────────────────────────────────────────────────
 
-def valor_atipico_cartao_proxy(
+def valor_atipico_proxy(
     df: pd.DataFrame,
     coluna_valor: str = "TransactionAmt",
     coluna_cartao: str = "card1",
@@ -87,10 +87,10 @@ def valor_atipico_cartao_proxy(
     # além de "muito atípico" — limitar preserva esse sinal sem gerar
     # magnitudes absurdas (ex.: bilhões) que dominariam a normalização depois.
     z = z.clip(lower=-30, upper=30)
-    return z.reindex(df.index).rename("valor_atipico_cartao_proxy")
+    return z.reindex(df.index).rename("valor_atipico_proxy")
 
 
-def frequencia_recente_cartao_proxy(
+def frequencia_recente_proxy(
     df: pd.DataFrame,
     coluna_cartao: str = "card1",
     coluna_tempo: str = "TransactionDT",
@@ -128,10 +128,10 @@ def frequencia_recente_cartao_proxy(
     # posição, e não por reindex baseado em rótulo.
     contagem = contagem.reset_index(drop=True)
     contagem.index = ordenado.index
-    return contagem.reindex(df.index).rename("frequencia_recente_cartao_proxy")
+    return contagem.reindex(df.index).rename("frequencia_recente_proxy")
 
 
-def dispositivo_raro_cartao_proxy(
+def dispositivo_raro_proxy(
     df: pd.DataFrame,
     coluna_cartao: str = "card1",
     coluna_dispositivo: str = "DeviceInfo",
@@ -160,7 +160,7 @@ def dispositivo_raro_cartao_proxy(
     contagem_anterior = chave_par.groupby(chave_par).cumcount()
     raridade = 1.0 / (contagem_anterior + 1)
     raridade = raridade.where(tem_dispositivo)
-    return raridade.reindex(df.index).rename("dispositivo_raro_cartao_proxy")
+    return raridade.reindex(df.index).rename("dispositivo_raro_proxy")
 
 
 def posicao_ciclo_diario_relativa(
@@ -202,14 +202,14 @@ def criar_features_pix(df: pd.DataFrame) -> pd.DataFrame:
 
     Não modifica `df` no lugar — retorna um novo DataFrame.
     """
-    logger.info("Calculando valor_atipico_cartao_proxy...")
-    valor_atipico = valor_atipico_cartao_proxy(df)
+    logger.info("Calculando valor_atipico_proxy...")
+    valor_atipico = valor_atipico_proxy(df)
 
-    logger.info("Calculando frequencia_recente_cartao_proxy...")
-    frequencia_recente = frequencia_recente_cartao_proxy(df)
+    logger.info("Calculando frequencia_recente_proxy...")
+    frequencia_recente = frequencia_recente_proxy(df)
 
-    logger.info("Calculando dispositivo_raro_cartao_proxy...")
-    dispositivo_raro = dispositivo_raro_cartao_proxy(df)
+    logger.info("Calculando dispositivo_raro_proxy...")
+    dispositivo_raro = dispositivo_raro_proxy(df)
 
     logger.info("Calculando posicao_ciclo_diario_relativa...")
     ciclo_diario = posicao_ciclo_diario_relativa(df)
@@ -235,9 +235,9 @@ if __name__ == "__main__":
     df_features = criar_features_pix(df_merged)
 
     colunas_novas = [
-        "valor_atipico_cartao_proxy",
-        "frequencia_recente_cartao_proxy",
-        "dispositivo_raro_cartao_proxy",
+        "valor_atipico_proxy",
+        "frequencia_recente_proxy",
+        "dispositivo_raro_proxy",
         "posicao_ciclo_diario_relativa",
         "posicao_ciclo_diario_sen",
         "posicao_ciclo_diario_cos",

@@ -19,9 +19,9 @@ Esta ata registra a validação de Letícia sobre os pontos levantados lá.
 3. **Atributos derivados aprovados para implementação em junho**
    (`src/features/pix_features.py`), com as ressalvas já documentadas na seção 4 de
    `05_mapeamento_e_kickoff.md`:
-   - `valor_atipico_cartao_proxy`
-   - `frequencia_recente_cartao_proxy`
-   - `dispositivo_raro_cartao_proxy`
+   - `valor_atipico_proxy`
+   - `frequencia_recente_proxy`
+   - `dispositivo_raro_proxy`
    - `posicao_ciclo_diario_relativa`
 
 ## Pendências

@@ -8,7 +8,7 @@
   "scope_note": "Proxies analíticos para uma prova de conceito; não representam campos de uma transação Pix real.",
   "features": [
     {
-      "feature_id": "valor_atipico_cartao_proxy",
+      "feature_id": "valor_atipico_proxy",
       "concept_label": "desvio robusto do valor no histórico proxy",
       "source_columns": ["TransactionAmt", "card1", "TransactionDT"],
       "definition": "(valor - mediana_anterior) / (MAD_anterior * 1.4826 + 1e-6), limitado ao intervalo [-30, 30]",
@@ -20,7 +20,7 @@
       "warning": "card1 é um identificador mascarado do domínio original, não uma conta ou chave Pix."
     },
     {
-      "feature_id": "frequencia_recente_cartao_proxy",
+      "feature_id": "frequencia_recente_proxy",
       "concept_label": "frequência recente no identificador proxy",
       "source_columns": ["card1", "TransactionDT"],
       "definition": "contagem de transações do mesmo card1 no intervalo (t - janela_segundos, t)",
@@ -32,7 +32,7 @@
       "warning": "A janela usa o relógio relativo do dataset e não representa necessariamente um dia civil Pix."
     },
     {
-      "feature_id": "dispositivo_raro_cartao_proxy",
+      "feature_id": "dispositivo_raro_proxy",
       "concept_label": "raridade do dispositivo no histórico proxy",
       "source_columns": ["card1", "DeviceInfo", "TransactionDT"],
       "definition": "1 / (contagem_anterior_do_par(card1, DeviceInfo) + 1)",

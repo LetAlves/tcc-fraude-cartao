@@ -26,9 +26,9 @@ class JuneDeliverablesTest(unittest.TestCase):
         self.assertEqual(
             set(feature_ids),
             {
-                "valor_atipico_cartao_proxy",
-                "frequencia_recente_cartao_proxy",
-                "dispositivo_raro_cartao_proxy",
+                "valor_atipico_proxy",
+                "frequencia_recente_proxy",
+                "dispositivo_raro_proxy",
                 "posicao_ciclo_diario_relativa",
             },
         )

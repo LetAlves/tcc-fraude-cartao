@@ -59,9 +59,9 @@ Os atributos derivados precisam ser implementados e validados antes de serem usa
 
 | ID semântico proposto | Definição possível no IEEE-CIS | Tag RAG | Advertência |
 |---|---|---|---|
-| `valor_atipico_cartao_proxy` | desvio robusto de `TransactionAmt` no histórico anterior do mesmo `card1`, calculado dentro da partição | `valor_atipico` | `card1` é proxy, não conta Pix |
-| `frequencia_recente_cartao_proxy` | contagem anterior em janela relativa de `TransactionDT` para `card1` | `frequencia_incomum` | evitar usar eventos futuros |
-| `dispositivo_raro_cartao_proxy` | raridade de `DeviceInfo` no histórico anterior do proxy | `dispositivo_incomum` | disponível apenas onde há identidade |
+| `valor_atipico_proxy` | desvio robusto de `TransactionAmt` no histórico anterior do mesmo `card1`, calculado dentro da partição | `valor_atipico` | `card1` é proxy, não conta Pix |
+| `frequencia_recente_proxy` | contagem anterior em janela relativa de `TransactionDT` para `card1` | `frequencia_incomum` | evitar usar eventos futuros |
+| `dispositivo_raro_proxy` | raridade de `DeviceInfo` no histórico anterior do proxy | `dispositivo_incomum` | disponível apenas onde há identidade |
 | `posicao_ciclo_diario_relativa` | componente cíclico de `TransactionDT mod 86400` | `padrao_temporal` | não chamar de horário local |
 
 Requisitos do registro definitivo: fórmula, colunas-fonte, população, janela, unidade, tratamento de nulos, risco de vazamento, autor, versão e testes. Até isso existir, o RAG não deve consultar por essas tags.
