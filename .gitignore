@@ -12,6 +12,10 @@ env/
 # Dados (arquivos grandes ficam fora do git)
 data/raw/
 data/processed/
+data/rag/raw/
+data/rag/processed/
+data/rag/index/
+data/rag/manifest.json
 
 # Outputs de notebooks
 .ipynb_checkpoints/

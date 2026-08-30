@@ -16,6 +16,8 @@ langchain-community>=0.2.0    # integrações: FAISS, HuggingFace
 sentence-transformers>=3.0.0  # embeddings multilíngues (paraphrase-multilingual-MiniLM)
 faiss-cpu>=1.8.0              # banco vetorial para busca por similaridade
 anthropic>=0.30.0             # Claude API (LLM para geração das explicações)
+pypdf>=6.0.0,<7.0.0          # extração rastreável dos documentos PDF do corpus
+beautifulsoup4>=4.12.0,<5.0.0 # limpeza dos documentos HTML do corpus
 
 # ── Interface ─────────────────────────────────────────────────────────────────
 streamlit>=1.35.0             # interface de demonstração do protótipo

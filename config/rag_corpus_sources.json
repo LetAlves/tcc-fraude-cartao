@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "description": "Fontes aprovadas para o corpus documental do RAG do TCC.",
+  "sources": [
+    {
+      "document_id": "bcb-regulamento-pix-resolucao-1-2020",
+      "title": "Regulamento do Pix — Resolução BCB nº 1/2020 (texto consolidado)",
+      "issuer": "Banco Central do Brasil",
+      "document_type": "regulamento",
+      "format": "bcb_normativo_json",
+      "source_url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?numero=1&tipo=Resolu%C3%A7%C3%A3o+BCB",
+      "download_url": "https://www.bcb.gov.br/api/conteudo/app/normativos/exibenormativo?p1=Resolu%C3%A7%C3%A3o%20BCB&p2=1",
+      "filename": "bcb_regulamento_pix_resolucao_1_2020.json",
+      "published_at": "2020-08-12",
+      "version_label": "texto consolidado vigente em 2026-04-27",
+      "norm_status": "vigente",
+      "corpus_role": "Fonte normativa principal para regras e participantes do Pix."
+    },
+    {
+      "document_id": "bcb-resolucao-103-2021",
+      "title": "Resolução BCB nº 103/2021",
+      "issuer": "Banco Central do Brasil",
+      "document_type": "resolucao",
+      "format": "bcb_normativo_json",
+      "source_url": "https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?lang=pt&numero=103&tipo=Resolu%C3%A7%C3%A3o+BCB",
+      "download_url": "https://www.bcb.gov.br/api/conteudo/app/normativos/exibenormativo?p1=Resolu%C3%A7%C3%A3o%20BCB&p2=103",
+      "filename": "bcb_resolucao_103_2021.json",
+      "published_at": "2021-06-08",
+      "version_label": "publicada em 2021-06-08",
+      "norm_status": "vigente com efeitos incorporados ao Regulamento do Pix",
+      "corpus_role": "Ato que introduziu o Mecanismo Especial de Devolução no Regulamento do Pix."
+    },
+    {
+      "document_id": "bcb-guia-med-4-3",
+      "title": "Guia do Mecanismo Especial de Devolução — versão 4.3",
+      "issuer": "Banco Central do Brasil",
+      "document_type": "guia_operacional",
+      "format": "pdf",
+      "source_url": "https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Guia_MED.pdf",
+      "filename": "bcb_guia_med_v4_3.pdf",
+      "published_at": "2026-07-07",
+      "version_label": "4.3",
+      "norm_status": "guia operacional vigente na data da coleta",
+      "corpus_role": "Detalhamento operacional do MED e dos fluxos de recuperação de valores."
+    },
+    {
+      "document_id": "febraban-tecnologia-bancaria-2024-volume-1",
+      "title": "Pesquisa Febraban de Tecnologia Bancária 2024 — Volume 1",
+      "issuer": "Federação Brasileira de Bancos",
+      "document_type": "relatorio_setorial",
+      "format": "pdf",
+      "source_url": "https://cmsarquivos.febraban.org.br/Arquivos/documentos/PDF/Pesquisa%20Febraban%20de%20Tecnologia%20Banc%C3%A1ria%202024.pdf",
+      "filename": "febraban_tecnologia_bancaria_2024_volume_1.pdf",
+      "published_at": "2024-05-01",
+      "version_label": "2024 — volume 1",
+      "norm_status": "não normativo",
+      "corpus_role": "Contexto setorial sobre tecnologia bancária; não usar como fonte normativa nem como taxa de fraude."
+    }
+  ]
+}
